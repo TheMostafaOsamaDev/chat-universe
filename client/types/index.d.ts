@@ -3,3 +3,8 @@ type RegisterType = {
   email: string;
   password: string;
 };
+
+type LogInType = {
+  email: string;
+  password: string;
+};

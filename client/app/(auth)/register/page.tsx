@@ -8,9 +8,11 @@ import { ApiError } from "@/lib/api-error";
 import { registerFn } from "@/lib/api/tanstack/auth";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function Register() {
+  const router = useRouter();
   const { toast } = useToast();
   const registerMutate = useMutation({
     mutationFn: registerFn,
@@ -23,6 +25,7 @@ export default function Register() {
       toast({
         description: "Registration successful",
       });
+      router.push("/log-in");
     },
   });
 

@@ -8,7 +8,7 @@ export class CreateUserDto {
     type: String,
     description: 'The full name of the user',
   })
-  fullName: string;
+  name: string;
 
   @IsNotEmpty({ message: 'Email is required' })
   @IsEmail({}, { message: 'Invalid email' })
