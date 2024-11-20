@@ -8,6 +8,7 @@ import { ApiError } from "@/lib/api-error";
 import { registerFn } from "@/lib/api/tanstack/auth";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -100,6 +101,15 @@ export default function Register() {
               "Register"
             )}
           </Button>
+
+          <div>
+            <p className="text-center text-sm">
+              Already have an account?{" "}
+              <Button asChild variant={"link"} className="text-primary px-0">
+                <Link href={"/log-in"}>Log in</Link>
+              </Button>
+            </p>
+          </div>
         </form>
       </section>
     </div>

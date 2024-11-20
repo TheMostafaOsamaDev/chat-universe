@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -24,7 +24,15 @@ export class AuthController {
     return this.authService.logIn(logInUserDto, req, res);
   }
 
-  @Post('logout')
+  @Get('get-session')
+  async getSession(@Req() req: Request, @Res() res: Response) {
+    if (req.session.user) {
+      return res.send(req.session.user);
+    }
+    return res.status(401).send({ message: 'Unauthorized' });
+  }
+
+  @Delete('logout')
   async logout(@Req() req: Request, @Res() res: Response) {
     req.session.destroy((err) => {
       if (err) {
@@ -33,13 +41,5 @@ export class AuthController {
       res.clearCookie('connect.sid'); // Clear the session cookie
       return res.send({ message: 'User logged out' });
     });
-  }
-
-  @Post('verify')
-  async verify(@Req() req: Request, @Res() res: Response) {
-    if (req.session.user) {
-      return res.send(req.session.user);
-    }
-    return res.status(401).send({ message: 'Unauthorized' });
   }
 }

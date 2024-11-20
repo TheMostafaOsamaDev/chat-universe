@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { MessageSquareDot } from "lucide-react";
-import Link from "next/link";
+import MainPageButton from "@/components/MainPageButton";
+import MainPageLoaderButton from "@/components/MainPageLoaderButton";
+import { Suspense } from "react";
 
 export default function Home() {
   return (
@@ -11,11 +11,9 @@ export default function Home() {
           The right place to start chatting with people around the world.
         </p>
 
-        <Button asChild size={"lg"}>
-          <Link href="/register">
-            <MessageSquareDot /> Start Chatting Now!
-          </Link>
-        </Button>
+        <Suspense fallback={<MainPageLoaderButton />}>
+          <MainPageButton />
+        </Suspense>
       </div>
     </div>
   );

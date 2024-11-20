@@ -8,6 +8,7 @@ import { ApiError } from "@/lib/api-error";
 import { logInFn } from "@/lib/api/tanstack/auth";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -25,7 +26,7 @@ export default function LogIn() {
       toast({
         description: "Logged In successfully",
       });
-      router.push("/");
+      // router.push("/");
     },
   });
 
@@ -75,6 +76,15 @@ export default function LogIn() {
               "Log In"
             )}
           </Button>
+
+          <div>
+            <p className="text-center text-sm">
+              Dont have an account?{" "}
+              <Button asChild variant={"link"} className="text-primary px-0">
+                <Link href={"/register"}>Register</Link>
+              </Button>
+            </p>
+          </div>
         </form>
       </section>
     </div>
