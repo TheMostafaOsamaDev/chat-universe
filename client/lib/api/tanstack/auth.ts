@@ -9,7 +9,7 @@ export const registerFn = async (data: RegisterType) => {
 
 export const logInFn = async (data: LogInType) => {
   const res = await baseApi.post("/auth/login", data);
-  const resData = res.data;
+  const resData: { user: User; session: string } = res.data;
 
   return resData;
 };

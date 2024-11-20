@@ -1,5 +1,6 @@
 "use client";
 
+import { saveAuth } from "@/actions/auth.actions";
 import { Button } from "@/components/ui/button";
 import { Input, PasswordInput } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,11 +23,13 @@ export default function LogIn() {
         description: ApiError.generate(error).message,
       });
     },
-    onSuccess: () => {
+    onSuccess: (res) => {
       toast({
         description: "Logged In successfully",
       });
-      // router.push("/");
+
+      saveAuth(res.session);
+      router.push("/");
     },
   });
 

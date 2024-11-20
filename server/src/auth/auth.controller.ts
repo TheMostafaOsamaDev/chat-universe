@@ -24,12 +24,9 @@ export class AuthController {
     return this.authService.logIn(logInUserDto, req, res);
   }
 
-  @Get('get-session')
-  async getSession(@Req() req: Request, @Res() res: Response) {
-    if (req.session.user) {
-      return res.send(req.session.user);
-    }
-    return res.status(401).send({ message: 'Unauthorized' });
+  @Post('get-session')
+  async getSession(@Req() req: Request) {
+    return this.authService.getSession(req.body?.session);
   }
 
   @Delete('logout')

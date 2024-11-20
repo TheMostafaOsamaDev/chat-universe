@@ -8,3 +8,13 @@ declare module 'express-session' {
     user?: User; // You can specify the exact type of your user model here.
   }
 }
+
+type SessionDecoded = {
+  email: string;
+  name: string;
+  username: string;
+  id: string;
+  sessionId: string;
+  iat: number;
+  exp: number;
+};
