@@ -16,3 +16,5 @@ type User = {
   email: string;
   password: string;
 };
+
+interface IUser extends User {}

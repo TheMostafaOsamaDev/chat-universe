@@ -1,39 +1,19 @@
 "use client";
-
-import { saveAuth } from "@/actions/auth.actions";
+import { logIn } from "@/actions/auth.actions";
 import { Button } from "@/components/ui/button";
 import { Input, PasswordInput } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { ApiError } from "@/lib/api-error";
-import { logInFn } from "@/lib/api/tanstack/auth";
-import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function LogIn() {
-  const router = useRouter();
   const { toast } = useToast();
-  const logInMutate = useMutation({
-    mutationFn: logInFn,
-    onError: (error) => {
-      toast({
-        description: ApiError.generate(error).message,
-      });
-    },
-    onSuccess: (res) => {
-      toast({
-        description: "Logged In successfully",
-      });
+  const [isPending, setIsPending] = React.useState(false);
 
-      saveAuth(res.session);
-      router.push("/");
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
@@ -41,10 +21,19 @@ export default function LogIn() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    logInMutate.mutate({
-      email,
-      password,
-    });
+    try {
+      setIsPending(true);
+      await logIn({ email, password });
+    } catch (error) {
+      const err = ApiError.generate(error);
+
+      toast({
+        variant: "destructive",
+        description: err.message,
+      });
+
+      setIsPending(false);
+    }
   };
 
   return (
@@ -70,8 +59,8 @@ export default function LogIn() {
             />
           </div>
 
-          <Button className="w-full" disabled={logInMutate.isPending}>
-            {logInMutate.isPending ? (
+          <Button className="w-full" disabled={isPending}>
+            {isPending ? (
               <>
                 <Loader2 className="animate-spin" /> Loading...
               </>

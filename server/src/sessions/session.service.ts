@@ -41,20 +41,30 @@ export class SessionService {
   }
 
   async validateSession(session?: string) {
-    if (!session) {
-      return false;
-    }
+    try {
+      if (!session) {
+        return false;
+      }
 
-    const sessionDecoded: SessionDecoded = this.jwtService.decode(session);
+      const sessionDecoded: SessionDecoded = this.jwtService.verify(session);
 
-    const hashedSessionToken = await this.cacheManager.get(
-      sessionDecoded.sessionId,
-    );
+      const hashedSessionToken = await this.cacheManager.get(
+        sessionDecoded.sessionId,
+      );
 
-    // df7766ab-46cf-4e4c-9fca-f5ae1e38e449
-    console.log(sessionDecoded.sessionId);
-    console.log('hashedSessionToken', hashedSessionToken);
-    if (!hashedSessionToken) {
+      console.log(hashedSessionToken);
+
+      if (!hashedSessionToken) {
+        return false;
+      }
+
+      const isValid = await bcrypt.compare(
+        session,
+        hashedSessionToken.toString(),
+      );
+
+      return isValid;
+    } catch (error) {
       return false;
     }
   }

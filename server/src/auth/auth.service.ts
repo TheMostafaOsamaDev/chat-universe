@@ -53,6 +53,6 @@ export class AuthService {
   }
 
   async getSession(session?: string) {
-    await this.sessionService.validateSession(session);
+    return await this.sessionService.validateSession(session);
   }
 }
