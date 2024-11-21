@@ -7,11 +7,9 @@ import { auth } from "@/auth";
 export default async function MainPageButton() {
   const session = await auth();
 
-  console.log(session);
-
   return (
     <Button asChild size={"lg"}>
-      <Link href="/register">
+      <Link href={`${session?.user ? "/chat" : "/register "}`}>
         <MessageSquareDot /> Start Chatting Now!
       </Link>
     </Button>
