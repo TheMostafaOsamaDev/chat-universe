@@ -44,11 +44,14 @@ export class AuthService {
       throw new BadRequestException('Wrong password');
     }
 
-    const session = await this.sessionService.createSession(user);
+    // const session = await this.sessionService.createSession(user);
 
     return res.json({
-      user,
-      session,
+      user: {
+        ...user.toJSON(),
+        password: undefined,
+      },
+      // session,
     });
   }
 

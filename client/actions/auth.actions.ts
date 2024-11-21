@@ -14,6 +14,4 @@ export const saveAuth = (session: string) => {
 
 export const logIn = async (cred: { email: string; password: string }) => {
   await signIn("credentials", cred);
-
-  return redirect("/chat");
 };
