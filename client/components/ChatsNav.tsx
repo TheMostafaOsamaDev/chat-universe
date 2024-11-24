@@ -1,11 +1,11 @@
+"use client";
 import { SearchIcon } from "lucide-react";
 import { Skeleton } from "./ui/skeleton";
-import { Input } from "./ui/input";
 
 export default function ChatsNav() {
   return (
-    <div className="py-10 px-8 h-screen w-[320px] shadow-md">
-      <div className="flex items-center gap-1 mb-8 transition-colors border-2 border-transparent bg-secondary focus-within:bg-secondary/60 focus-within:border-primary/30 py-2 px-4 rounded">
+    <div className="py-10 px-6 h-screen w-[320px] shadow-md">
+      <div className="flex items-center gap-1 mb-8 transition-colors border-2 border-transparent bg-secondary focus-within:bg-secondary/30 focus-within:border-primary/30 py-2 px-4 rounded">
         <SearchIcon />
         <input className="outline-none bg-transparent" />
       </div>
