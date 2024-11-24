@@ -16,7 +16,7 @@ export default function useSearch() {
     return () => clearTimeout(timer);
   }, [search]);
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isPending, error } = useQuery({
     queryFn: ({ signal }) =>
       searchUsers({
         query: debouncedSearch,
@@ -30,7 +30,7 @@ export default function useSearch() {
     search,
     setSearch,
     data,
-    isLoading,
+    isPending,
     error,
   };
 }

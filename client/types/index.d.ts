@@ -17,4 +17,12 @@ type User = {
   password: string;
 };
 
+type ChatUser = {
+  _id: string;
+  name: string;
+  username: string;
+  email: string;
+  avatar: string;
+};
+
 interface IUser extends User {}

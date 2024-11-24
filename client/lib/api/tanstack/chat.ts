@@ -11,6 +11,6 @@ export const searchUsers = async ({
     params: { value: query },
     signal,
   });
-  const resData = res.data;
+  const resData: ChatUser[] = res.data;
   return resData;
 };

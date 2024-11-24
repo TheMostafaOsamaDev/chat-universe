@@ -15,6 +15,9 @@ export class User {
 
   @Prop({ required: true })
   password: string;
+
+  @Prop({ default: '/avatars/default_avatar.png' })
+  avatar: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
@@ -33,7 +36,11 @@ UserSchema.pre('save', function (next) {
 
   if (!user.isModified('username')) return next();
 
-  user.username = `${user.username}`.toLowerCase();
+  user.username =
+    `${user.username.toLowerCase()} ${uuidv4().slice(0, 8)}`.replaceAll(
+      ' ',
+      '_',
+    );
   next();
 });
 

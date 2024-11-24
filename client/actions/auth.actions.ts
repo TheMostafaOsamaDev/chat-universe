@@ -1,6 +1,6 @@
 "use server";
 
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -14,4 +14,8 @@ export const saveAuth = (session: string) => {
 
 export const logIn = async (cred: { email: string; password: string }) => {
   await signIn("credentials", cred);
+};
+
+export const logOut = async () => {
+  return await signOut();
 };

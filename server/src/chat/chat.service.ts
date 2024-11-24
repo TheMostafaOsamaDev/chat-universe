@@ -1,26 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
+import { Model } from 'mongoose';
+import { User } from 'src/auth/user.model';
 
 @Injectable()
 export class ChatService {
-  create(createChatDto: CreateChatDto) {
-    return 'This action adds a new chat';
-  }
+  constructor(@Inject('User') private userModel: Model<User>) {}
 
-  findAll() {
-    return `This action returns all chat`;
-  }
+  searchUsers(value: string) {
+    const emailRegex = new RegExp(`^[^@]*${value}`, 'i');
 
-  findOne(id: number) {
-    return `This action returns a #${id} chat`;
-  }
-
-  update(id: number, updateChatDto: UpdateChatDto) {
-    return `This action updates a #${id} chat`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} chat`;
+    return this.userModel
+      .find({
+        $or: [
+          { name: { $regex: value, $options: 'i' } },
+          { email: { $regex: emailRegex } },
+          { username: { $regex: value, $options: 'i' } },
+        ],
+      })
+      .select('-password')
+      .limit(8);
   }
 }
