@@ -8,8 +8,17 @@ import { User } from 'src/auth/user.model';
 export class ChatService {
   constructor(@Inject('User') private userModel: Model<User>) {}
 
-  changeUserStatus(userId: string, status: string) {
-    return this.userModel.findByIdAndUpdate(userId, { status });
+  changeUserStatus(userId: string, isOnline: boolean, socketid?: string) {
+    if (isOnline) return this.userModel.findByIdAndUpdate(userId, { isOnline });
+
+    if (socketid) {
+      return this.userModel.findOneAndUpdate(
+        {
+          clientSocketId: socketid,
+        },
+        { isOnline },
+      );
+    }
   }
 
   searchUsers(value: string) {

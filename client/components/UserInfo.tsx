@@ -6,9 +6,46 @@ import { logOut } from "@/actions/auth.actions";
 import { Skeleton } from "./ui/skeleton";
 import Image from "next/image";
 import { getAvatarUrl, sliceText } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import SocketClient from "@/app/socket";
 
 export default function UserInfo() {
   const { data: session } = useSession();
+  const [isActive, setIsActive] = useState(false);
+
+  useEffect(() => {
+    const instance = SocketClient.getInstance();
+
+    if (session?.user && !isActive) {
+      instance.connect();
+
+      // TODO: Emit changeStatus event to update user status
+
+      instance.on("connect", () => {
+        // instance.emit("changeStatus", {
+        //   userId: session.user._id,
+        //   isOnline: true,
+        // });
+        instance.emit("userConnected", session.user._id);
+      });
+
+      setIsActive(true);
+    }
+
+    return () => {
+      // Send offline status before disconnecting
+      if (session?.user) {
+        const instance = SocketClient.getInstance();
+        instance.emit("changeStatus", {
+          userId: session.user._id,
+          isOnline: false,
+        });
+        instance.disconnect();
+      }
+
+      setIsActive(false);
+    };
+  }, [session]);
 
   if (!session) {
     return <UserInfoSkeleton />;

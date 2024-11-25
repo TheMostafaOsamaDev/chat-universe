@@ -21,6 +21,9 @@ export class User {
 
   @Prop({ default: false })
   isOnline: boolean;
+
+  @Prop({ default: '' })
+  clientSocketId: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
