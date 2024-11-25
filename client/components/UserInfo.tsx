@@ -52,7 +52,7 @@ export default function UserInfo() {
   }
 
   return (
-    <div className="border border-secondary rounded flex items-center gap-3 px-3 py-2">
+    <div className="bg-secondary rounded flex items-center gap-3 px-3 py-2">
       <div className="flex gap-2 items-center flex-1">
         <Image
           src={getAvatarUrl(session.user.avatar)}
@@ -78,7 +78,7 @@ export default function UserInfo() {
 
 export function UserInfoSkeleton() {
   return (
-    <div className="border border-secondary rounded flex items-center gap-3 px-3 py-2">
+    <div className="bg-secondary rounded flex items-center gap-3 px-3 py-2">
       <div className="flex gap-2 items-center flex-1">
         <Skeleton className="size-10 rounded-full" />
 
