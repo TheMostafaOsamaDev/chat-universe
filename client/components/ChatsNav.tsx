@@ -1,10 +1,9 @@
 "use client";
-import { Loader2, LogOut, SearchIcon } from "lucide-react";
+import { Loader2, SearchIcon } from "lucide-react";
 import useSearch from "@/hooks/use-search";
 import { SingleChat, SingleChatSkeleton } from "./SingleChat";
-import { Button } from "./ui/button";
-import { signOut } from "@/auth";
-import { logOut } from "@/actions/auth.actions";
+import UserInfo, { UserInfoSkeleton } from "./UserInfo";
+import { Suspense } from "react";
 
 export default function ChatsNav() {
   const { setSearch, isPending, data, search } = useSearch();
@@ -31,13 +30,9 @@ export default function ChatsNav() {
           data.map((chat) => <SingleChat key={chat._id} chat={chat} />)}
       </nav>
 
-      <Button
-        className="w-full text-red-600 hover:text-red-700 flex items-center gap-1 focus-visible:ring-red-700"
-        variant={"ghost"}
-        onClick={async () => await logOut()}
-      >
-        <LogOut /> Log Out
-      </Button>
+      <Suspense fallback={<UserInfoSkeleton />}>
+        <UserInfo />
+      </Suspense>
     </div>
   );
 }

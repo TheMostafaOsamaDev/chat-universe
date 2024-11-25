@@ -8,6 +8,10 @@ import { User } from 'src/auth/user.model';
 export class ChatService {
   constructor(@Inject('User') private userModel: Model<User>) {}
 
+  changeUserStatus(userId: string, status: string) {
+    return this.userModel.findByIdAndUpdate(userId, { status });
+  }
+
   searchUsers(value: string) {
     const emailRegex = new RegExp(`^[^@]*${value}`, 'i');
 

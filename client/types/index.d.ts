@@ -15,6 +15,7 @@ type User = {
   username: string;
   email: string;
   password: string;
+  avatar: string;
 };
 
 type ChatUser = {

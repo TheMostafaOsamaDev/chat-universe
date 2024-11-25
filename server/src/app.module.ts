@@ -7,7 +7,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { ChatModule } from './chat/chat.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-// import { authProviders } from './auth/auth.providers';
+import { authProviders } from './auth/auth.providers';
 
 @Module({
   imports: [
@@ -22,6 +22,6 @@ import { join } from 'path';
     }),
   ],
   controllers: [AppController],
-  // providers: [...authProviders],
+  providers: [...authProviders],
 })
 export class AppModule {}

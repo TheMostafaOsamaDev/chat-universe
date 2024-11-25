@@ -18,6 +18,9 @@ export class User {
 
   @Prop({ default: '/avatars/default_avatar.png' })
   avatar: string;
+
+  @Prop({ default: false })
+  isOnline: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
