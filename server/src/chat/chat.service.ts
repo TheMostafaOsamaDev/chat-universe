@@ -3,10 +3,14 @@ import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
 import { Model } from 'mongoose';
 import { User } from 'src/auth/user.model';
+import { Chat } from './chat.model';
 
 @Injectable()
 export class ChatService {
-  constructor(@Inject('User') private userModel: Model<User>) {}
+  constructor(
+    @Inject('User') private userModel: Model<User>,
+    @Inject('Chat') private chatModel: Model<Chat>,
+  ) {}
 
   changeUserStatus(userId: string, isOnline: boolean, socketid?: string) {
     if (isOnline) return this.userModel.findByIdAndUpdate(userId, { isOnline });
