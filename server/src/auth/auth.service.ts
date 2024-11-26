@@ -40,11 +40,16 @@ export class AuthService {
 
     const isMatch = await comparePassword(logInUserDto.password, user.password);
 
-    console.log(isMatch);
-
     if (!isMatch) {
       throw new BadRequestException('Wrong password');
     }
+
+    const session = await this.sessionService.createSession(user);
+
+    res.cookie('session', session, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    });
 
     return res.json({
       user: {
