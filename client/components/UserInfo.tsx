@@ -22,11 +22,11 @@ export default function UserInfo() {
       // TODO: Emit changeStatus event to update user status
 
       instance.on("connect", () => {
-        // instance.emit("changeStatus", {
-        //   userId: session.user._id,
-        //   isOnline: true,
-        // });
-        instance.emit("userConnected", session.user._id);
+        const socketId = instance.id;
+        instance.emit("userConnected", {
+          userId: session.user._id,
+          socketId,
+        });
       });
 
       setIsActive(true);

@@ -12,10 +12,14 @@ export class ChatService {
     @Inject('Chat') private chatModel: Model<Chat>,
   ) {}
 
-  changeUserStatus(userId: string, isOnline: boolean, socketid?: string) {
-    if (isOnline) return this.userModel.findByIdAndUpdate(userId, { isOnline });
+  changeUserStatus(userId: string, isOnline: boolean, socketid: string) {
+    if (isOnline)
+      return this.userModel.findByIdAndUpdate(userId, {
+        isOnline,
+        clientSocketId: socketid,
+      });
 
-    if (socketid) {
+    if (!isOnline) {
       return this.userModel.findOneAndUpdate(
         {
           clientSocketId: socketid,
@@ -38,5 +42,13 @@ export class ChatService {
       })
       .select('-password')
       .limit(8);
+  }
+
+  getUser(id: string) {
+    return this.userModel
+      .findById(id)
+      .select(
+        '-password -email -avatar -email -createdAt -updatedAt -clientSocketId',
+      );
   }
 }

@@ -7,12 +7,15 @@ import {
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
+import { UseGuards } from '@nestjs/common';
+import { WsGatewayGuard } from 'src/guards/ws-gateway.guard';
 
 @WebSocketGateway(8080, {
   cors: {
     origin: '*',
   },
 })
+@UseGuards(WsGatewayGuard)
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server;
 
@@ -22,18 +25,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(`Client connected: ${client.id}`);
   }
 
-  handleDisconnect(client: any) {
-    return this.chatService.changeUserStatus(client.id, false, client.id);
+  async handleDisconnect(client: any) {
+    return await this.chatService.changeUserStatus(client.id, false, client.id);
   }
 
   @SubscribeMessage('userConnected')
-  userConnected(client: any, @MessageBody() userId: string) {
-    console.log(client);
+  async userConnected(@MessageBody() body: any) {
+    return await this.chatService.changeUserStatus(
+      body.userId,
+      true,
+      body.socketId,
+    );
   }
-
-  // @SubscribeMessage('changeStatus')
-  // changeStatus(@MessageBody() data: { userId: string; isOnline: boolean }) {
-  //   console.log(data);
-  //   return this.chatService.changeUserStatus(data.userId, data.isOnline);
-  // }
 }
