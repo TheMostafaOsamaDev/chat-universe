@@ -16,6 +16,8 @@ type User = {
   email: string;
   password: string;
   avatar: string;
+  isOnline: boolean;
+  clientSocketId: string;
 };
 
 type ChatUser = {

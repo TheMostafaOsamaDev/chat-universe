@@ -26,11 +26,25 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   async handleDisconnect(client: any) {
-    return await this.chatService.changeUserStatus(client.id, false, client.id);
+    const user = await this.chatService.changeUserStatus(
+      client.id,
+      false,
+      client.id,
+    );
+
+    this.server.emit('changeUserStatus', {
+      ...user,
+      isOnline: false,
+    });
   }
 
   @SubscribeMessage('userConnected')
   async userConnected(@MessageBody() body: any) {
+    this.server.emit('changeUserStatus', {
+      ...body,
+      isOnline: true,
+    });
+
     return await this.chatService.changeUserStatus(
       body.userId,
       true,

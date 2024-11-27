@@ -44,11 +44,14 @@ export class ChatService {
       .limit(8);
   }
 
-  getUser(id: string) {
-    return this.userModel
+  async getUser(id: string) {
+    console.log(id);
+    const user = await this.userModel
       .findById(id)
-      .select(
-        '-password -email -avatar -email -createdAt -updatedAt -clientSocketId',
-      );
+      .select('-password -email -avatar -email -createdAt -updatedAt');
+
+    console.log(user);
+
+    return user;
   }
 }

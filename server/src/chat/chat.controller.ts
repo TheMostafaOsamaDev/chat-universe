@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { GetUserInfoDto } from './dto/get-user-info.dto';
 import { ApiResponse } from '@nestjs/swagger';
@@ -14,7 +14,7 @@ export class ChatController {
 
   @Get('/user/:id')
   @ApiResponse({ type: GetUserInfoDto })
-  async getUser(@Query('id') id: string): Promise<GetUserInfoDto> {
+  async getUser(@Param('id') id: string): Promise<GetUserInfoDto> {
     return await this.chatService.getUser(id);
   }
 }
