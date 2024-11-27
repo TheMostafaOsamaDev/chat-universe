@@ -16,9 +16,7 @@ export default function UserChatStatus({
 
     if (instance) {
       instance.on("changeUserStatus", (data) => {
-        console.log(data, userId);
-        console.log(data.userId === userId);
-        setIsOnline(data.userId === userId ? data.isOnline : isOnlineStatus);
+        if (data.userId === userId) setIsOnline(data.isOnline);
       });
     }
 

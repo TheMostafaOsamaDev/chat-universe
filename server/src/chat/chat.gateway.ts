@@ -33,7 +33,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     );
 
     this.server.emit('changeUserStatus', {
-      ...user,
+      ...user?.toJSON(),
       isOnline: false,
     });
   }

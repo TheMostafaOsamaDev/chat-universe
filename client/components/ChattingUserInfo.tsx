@@ -6,8 +6,11 @@ import UserChatStatus from "./UserChatStatus";
 export default async function ChattingUserInfo() {
   const headersList = headers();
   const fullUrl = headersList.get("referer") || "";
-  const url = new URL(fullUrl || "");
-  const userId = url.pathname.split("/").pop();
+  let url, userId;
+
+  if (fullUrl) url = new URL(fullUrl);
+
+  if (url) userId = url.pathname.split("/").pop();
 
   let content;
 
