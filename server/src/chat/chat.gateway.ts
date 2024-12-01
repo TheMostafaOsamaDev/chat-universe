@@ -10,6 +10,7 @@ import { ChatService } from './chat.service';
 import { UseGuards } from '@nestjs/common';
 import { WsGatewayGuard } from 'src/guards/ws-gateway.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { Server } from 'socket.io';
 
 @ApiTags('chat')
 @WebSocketGateway(8080, {
@@ -19,7 +20,7 @@ import { ApiTags } from '@nestjs/swagger';
 })
 @UseGuards(WsGatewayGuard)
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  @WebSocketServer() server;
+  @WebSocketServer() server: Server;
 
   constructor(private readonly chatService: ChatService) {}
 
@@ -56,7 +57,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('sendMessage')
   async handleSendMessage(@MessageBody() body: any) {
-    console.log('Sent message: ', body);
-    return await this.chatService.createMessage(body);
+    try {
+      console.log('Sent message: ', body);
+      return await this.chatService.createMessage(body);
+    } catch (error) {
+      console.log();
+    }
   }
 }

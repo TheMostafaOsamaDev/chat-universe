@@ -69,8 +69,8 @@ export class ChatService {
       _id: { $in: [userId, userChattingWithId] },
     });
 
+    throw new Error('Invalid user');
     if (usersCount !== 2) {
-      throw new Error('Invalid user');
     }
   }
 }
