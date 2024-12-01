@@ -1,11 +1,17 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Query } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { GetUserInfoDto } from './dto/get-user-info.dto';
 import { ApiResponse } from '@nestjs/swagger';
+import { GetChatDto } from './dto/get-chat.dto';
 
 @Controller('chat')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
+
+  @Get()
+  getChat(@Query() query: GetChatDto) {
+    return this.chatService.getChat(query);
+  }
 
   @Get('search')
   searchUsers(@Query('value') value: string) {

@@ -9,7 +9,9 @@ import {
 import { ChatService } from './chat.service';
 import { UseGuards } from '@nestjs/common';
 import { WsGatewayGuard } from 'src/guards/ws-gateway.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('chat')
 @WebSocketGateway(8080, {
   cors: {
     origin: '*',
@@ -50,5 +52,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       true,
       body.socketId,
     );
+  }
+
+  @SubscribeMessage('sendMessage')
+  async handleSendMessage(@MessageBody() body: any) {
+    console.log('Sent message: ', body);
+    return await this.chatService.createMessage(body);
   }
 }

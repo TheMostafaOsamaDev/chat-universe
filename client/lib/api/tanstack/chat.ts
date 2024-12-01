@@ -29,3 +29,27 @@ export const getUserInfo = async ({
     res.data;
   return resData;
 };
+
+export const getChat = async ({
+  userId,
+  userChattingWithId,
+  signal,
+}: {
+  userId: string;
+  userChattingWithId: string;
+  signal?: AbortSignal;
+}) => {
+  console.log({
+    userId,
+    userChattingWithId,
+    signal,
+  });
+  const res = await baseApi.get(`/chat`, {
+    signal,
+    params: { userId, userChattingWithId },
+  });
+
+  const resData: any[] = res.data;
+
+  return resData;
+};

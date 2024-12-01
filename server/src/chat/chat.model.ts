@@ -10,6 +10,9 @@ export class Chat {
 
   @Prop({ required: true, ref: 'User' })
   receiver: string;
+
+  @Prop({ default: false })
+  isDeleted: boolean;
 }
 
 export const ChatSchema = SchemaFactory.createForClass(Chat);

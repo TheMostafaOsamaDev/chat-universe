@@ -4,6 +4,7 @@ import { UpdateChatDto } from './dto/update-chat.dto';
 import { Model } from 'mongoose';
 import { User } from 'src/auth/user.model';
 import { Chat } from './chat.model';
+import { GetChatDto } from './dto/get-chat.dto';
 
 @Injectable()
 export class ChatService {
@@ -45,14 +46,31 @@ export class ChatService {
   }
 
   async getUser(id: string) {
-    console.log('~~~~~~~~~~~~~~~~~~~~~~');
-    console.log('Getting User', id);
     const user = await this.userModel
       .findById(id)
       .select('-password -email -avatar -email -createdAt -updatedAt');
 
-    console.log(user);
-
     return user;
+  }
+
+  async getChat({ userId, userChattingWithId }: GetChatDto) {
+    const chat = await this.chatModel.find({
+      $or: [
+        { sender: userId, receiver: userChattingWithId },
+        { sender: userChattingWithId, receiver: userId },
+      ],
+    });
+
+    return chat;
+  }
+
+  async createMessage({ message, userId, userChattingWithId }: CreateChatDto) {
+    const usersCount = await this.userModel.countDocuments({
+      _id: { $in: [userId, userChattingWithId] },
+    });
+
+    if (usersCount !== 2) {
+      throw new Error('Invalid user');
+    }
   }
 }

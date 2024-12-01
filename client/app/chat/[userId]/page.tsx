@@ -1,6 +1,5 @@
 import ChattingList from "@/components/ChattingList";
 import ChattingUserInfo from "@/components/ChattingUserInfo";
-import SendMessage from "@/components/SendMessage";
 import React from "react";
 
 export default function ChatPage() {
@@ -9,8 +8,6 @@ export default function ChatPage() {
       <ChattingUserInfo />
 
       <ChattingList />
-
-      <SendMessage />
     </div>
   );
 }
