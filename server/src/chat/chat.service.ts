@@ -45,7 +45,8 @@ export class ChatService {
   }
 
   async getUser(id: string) {
-    console.log(id);
+    console.log('~~~~~~~~~~~~~~~~~~~~~~');
+    console.log('Getting User', id);
     const user = await this.userModel
       .findById(id)
       .select('-password -email -avatar -email -createdAt -updatedAt');

@@ -1,34 +1,29 @@
-import { baseApi } from "@/lib/api/baseApi";
-import { headers } from "next/headers";
+"use client";
 import React from "react";
 import UserChatStatus from "./UserChatStatus";
+import { Skeleton } from "./ui/skeleton";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
+import { getUserInfo } from "@/lib/api/tanstack/chat";
 
-export default async function ChattingUserInfo() {
-  const headersList = headers();
-  const fullUrl = headersList.get("referer") || "";
-  let url, userId;
+export default function ChattingUserInfo() {
+  const params = useParams();
 
-  if (fullUrl) url = new URL(fullUrl);
+  if (typeof params.userId !== "string") {
+    throw new Error("Invalid userId");
+  }
 
-  if (url) userId = url.pathname.split("/").pop();
+  const { data, isPending, error } = useQuery({
+    queryFn: async ({ signal }) =>
+      getUserInfo({ userId: params.userId as string, signal }),
+    queryKey: ["getUserInfo", params.userId],
+  });
 
   let content;
 
-  try {
-    console.log("Sending request to get user info");
-    const res = await baseApi.get(`/chat/user/${userId}`);
-    const data: Pick<User, "username" | "name" | "_id" | "isOnline"> =
-      await res.data;
-
-    content = (
-      <div className="flex flex-col gap-1 font-medium">
-        <p className="font-medium text-xl">{data.name}</p>
-
-        <UserChatStatus userId={data._id} isOnline={data.isOnline} />
-      </div>
-    );
-  } catch (error) {
-    console.log("Error while fetching user info");
+  if (isPending) {
+    content = <GettingUserInfoSkeleton />;
+  } else if (error) {
     content = (
       <div className="flex flex-col gap-2 font-medium">
         <p className="text-red-700 text-xl">Sorry couldn't get the user info</p>
@@ -38,5 +33,28 @@ export default async function ChattingUserInfo() {
     );
   }
 
-  return <div className="pb-3 border-b">{content}</div>;
+  if (data) {
+    content = (
+      <>
+        <p className="font-medium text-[18px]">{data.name}</p>
+
+        <UserChatStatus userId={data._id} isOnline={data.isOnline} />
+      </>
+    );
+  }
+
+  return (
+    <div className="pb-2 border-b">
+      <div className="flex flex-col gap-1 font-medium">{content}</div>
+    </div>
+  );
+}
+
+function GettingUserInfoSkeleton() {
+  return (
+    <>
+      <Skeleton className="h-4 w-[140px]" />
+      <Skeleton className="h-4 w-[100px]" />
+    </>
+  );
 }
