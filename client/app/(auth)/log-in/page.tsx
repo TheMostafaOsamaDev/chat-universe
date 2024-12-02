@@ -7,13 +7,11 @@ import { useToast } from "@/hooks/use-toast";
 import { ApiError } from "@/lib/api-error";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function LogIn() {
   const { toast } = useToast();
   const [isPending, setIsPending] = React.useState(false);
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,7 +25,7 @@ export default function LogIn() {
       setIsPending(true);
       await logIn({ email, password });
 
-      router.push("/chat");
+      window.location.href = "/chat";
     } catch (error) {
       const err = ApiError.generate(error);
 

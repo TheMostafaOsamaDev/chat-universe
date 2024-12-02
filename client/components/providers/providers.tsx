@@ -3,6 +3,7 @@ import QueryProvider from "./QueryProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
+import ErrorToasterProvider from "./ErrorToasterProvider";
 
 export default async function Providers({
   children,
@@ -12,7 +13,7 @@ export default async function Providers({
   return (
     <SessionProvider session={await auth()}>
       <QueryProvider>
-        {children}
+        <ErrorToasterProvider>{children}</ErrorToasterProvider>
         <Toaster />
       </QueryProvider>
     </SessionProvider>

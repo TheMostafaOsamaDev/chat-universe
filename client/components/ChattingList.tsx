@@ -1,13 +1,15 @@
 "use client";
 import React, { useEffect } from "react";
 import ChatBubble from "./ChatBubble";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { getChat } from "@/lib/api/tanstack/chat";
 import SendMessage from "./SendMessage";
+import SocketClient from "@/app/socket";
 
 export default function ChattingList() {
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const params = useParams();
   const userId = session?.user?._id,
@@ -25,16 +27,37 @@ export default function ChattingList() {
   });
 
   useEffect(() => {
-    if (isError) {
-      console.error(error);
+    const instance = SocketClient.getInstance();
+
+    if (instance) {
+      instance.on("savedMessage", (newMessage) => {
+        console.log(newMessage);
+        // Optimistically update the cache with the new message
+        queryClient.setQueryData(
+          ["chat", userId, userChattingWithId],
+          (oldData: Message[]) => {
+            console.log(oldData);
+
+            if (!oldData) return [newMessage];
+
+            return [...oldData, newMessage];
+          }
+        );
+      });
     }
-  }, [isError]);
+
+    return () => {
+      if (instance) {
+        instance.off("savedMessage");
+      }
+    };
+  }, []);
 
   return (
     <>
-      <div className="flex-1 bg-gray-500/15 max-h-[75vh] overflow-y-auto">
-        {Array.from({ length: 50 }).map((_, i) => (
-          <ChatBubble key={i} message={`Message ${i}`} userId={userId} />
+      <div className="flex-1 flex flex-col justify-end gap-3 max-h-[75vh] overflow-y-auto">
+        {data?.map((message, i) => (
+          <ChatBubble key={i} message={message} userId={session?.user?._id} />
         ))}
       </div>
 

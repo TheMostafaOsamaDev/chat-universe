@@ -6,20 +6,18 @@ import { Send } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import SocketClient from "@/app/socket";
-import { useToast } from "@/hooks/use-toast";
 
 export default function SendMessage() {
   const { data: session } = useSession();
   const params = useParams();
-  const { toast } = useToast();
 
   const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
 
-    const userId = formData.get("userId");
-    const userChattingWithId = formData.get("userChattingWithId");
+    const userId = session?.user?._id;
+    const userChattingWithId = params.userId;
     const message = formData.get("message");
 
     if (userId !== session?.user?._id || !session?.user?._id) {
@@ -34,6 +32,8 @@ export default function SendMessage() {
         userChattingWithId,
         message,
       });
+
+      e.currentTarget.reset();
     }
   };
 
@@ -43,14 +43,6 @@ export default function SendMessage() {
       onSubmit={handleSendMessage}
     >
       <Input placeholder="Send a message" name="message" required />
-
-      <input type="hidden" name="userId" value={session?.user?._id} required />
-      <input
-        type="hidden"
-        name="userChattingWithId"
-        value={params.userId}
-        required
-      />
 
       <Button className="rounded">
         <Send />

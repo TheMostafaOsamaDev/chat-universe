@@ -5,12 +5,14 @@ import {
   WebSocketServer,
   OnGatewayConnection,
   OnGatewayDisconnect,
+  ConnectedSocket,
 } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
 import { UseGuards } from '@nestjs/common';
 import { WsGatewayGuard } from 'src/guards/ws-gateway.guard';
 import { ApiTags } from '@nestjs/swagger';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
+import { WebSocketErrorUtil } from 'src/utils/websocket-error.util';
 
 @ApiTags('chat')
 @WebSocketGateway(8080, {
@@ -56,12 +58,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('sendMessage')
-  async handleSendMessage(@MessageBody() body: any) {
+  async handleSendMessage(
+    @MessageBody() body: any,
+    @ConnectedSocket() client: Socket,
+  ) {
     try {
       console.log('Sent message: ', body);
-      return await this.chatService.createMessage(body);
+      const messasge = await this.chatService.createMessage(body);
+
+      this.server.emit('savedMessage', messasge);
     } catch (error) {
-      console.log();
+      WebSocketErrorUtil.handleError(
+        client,
+        body.userId,
+        error,
+        "Can't send message",
+      );
     }
   }
 }

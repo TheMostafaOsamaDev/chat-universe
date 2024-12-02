@@ -28,4 +28,18 @@ type ChatUser = {
   avatar: string;
 };
 
+type SocketError = {
+  message: string;
+};
+
+type Message = {
+  _id: string;
+  message: string;
+  sender: string;
+  receiver: string;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
 interface IUser extends User {}

@@ -69,8 +69,18 @@ export class ChatService {
       _id: { $in: [userId, userChattingWithId] },
     });
 
-    throw new Error('Invalid user');
     if (usersCount !== 2) {
+      throw new Error('Invalid user');
     }
+
+    const chat = new this.chatModel({
+      message,
+      sender: userId,
+      receiver: userChattingWithId,
+    });
+
+    return {
+      ...(await chat.save()).toJSON(),
+    };
   }
 }
