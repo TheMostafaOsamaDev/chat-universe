@@ -13,6 +13,11 @@ export class ChatController {
     return this.chatService.getChat(query);
   }
 
+  @Get('/all')
+  getAllUsers() {
+    return this.chatService.getAllChats();
+  }
+
   @Get('search')
   searchUsers(@Query('value') value: string) {
     return this.chatService.searchUsers(value);

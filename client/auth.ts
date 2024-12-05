@@ -16,14 +16,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorize: async (credentials) => {
         let user = null;
 
-        const res = await baseApi.post("/auth/login", credentials);
-        const data: { user: User } = await res.data;
+        // const res = await baseApi.post("/auth/login", credentials);
+        // const data: { user: User } = await res.data;
 
-        user = data.user;
+        // user = data.user;
 
-        if (!user) {
-          throw new Error("Invalid credentials.");
-        }
+        // if (!user) {
+        //   throw new Error("Invalid credentials.");
+        // }
 
         return user;
       },

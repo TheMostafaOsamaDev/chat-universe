@@ -30,6 +30,10 @@ export class ChatService {
     }
   }
 
+  async getAllChats() {
+
+  }
+
   searchUsers(value: string) {
     const emailRegex = new RegExp(`^[^@]*${value}`, 'i');
 

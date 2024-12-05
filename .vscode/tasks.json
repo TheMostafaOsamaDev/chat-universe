@@ -1,0 +1,25 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "dev",
+      "path": "client",
+      "problemMatcher": [],
+      "label": "npm: dev - client",
+      "detail": "next dev",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
+    },
+    {
+      "type": "npm",
+      "script": "start:dev",
+      "path": "server",
+      "problemMatcher": [],
+      "label": "npm: start:dev - server",
+      "detail": "nest start --watch"
+    }
+  ]
+}

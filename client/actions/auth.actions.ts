@@ -2,7 +2,6 @@
 
 import { signIn, signOut } from "@/auth";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 export const saveAuth = (session: string) => {
   cookies().set("session", session, {
