@@ -29,7 +29,7 @@ export class AuthService {
     return user.save();
   }
 
-  async logIn(logInUserDto: LogInUserDto, req: Request, res: Response) {
+  async logIn(logInUserDto: LogInUserDto) {
     const user = await this.userModel.findOne({
       email: logInUserDto.email,
     });
@@ -46,21 +46,17 @@ export class AuthService {
 
     const session = await this.sessionService.createSession(user);
 
-    res.cookie('session', session, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-    });
+    // res.cookie('session', session, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === 'production',
+    // });
 
-    return res.json({
+    return {
       user: {
         ...user.toJSON(),
         password: undefined,
       },
-      // session,
-    });
-  }
-
-  async getSession(session?: string) {
-    return await this.sessionService.validateSession(session);
+      session,
+    };
   }
 }

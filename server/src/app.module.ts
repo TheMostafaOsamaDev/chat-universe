@@ -14,7 +14,6 @@ import { authProviders } from './auth/auth.providers';
     AuthModule,
     ConfigModule.forRoot(),
     DatabaseModule,
-    CacheModule.register({ isGlobal: true }),
     ChatModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),

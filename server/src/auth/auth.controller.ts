@@ -16,17 +16,15 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(
-    @Body() logInUserDto: LogInUserDto,
-    @Req() req: Request,
-    @Res() res: Response,
-  ) {
-    return this.authService.logIn(logInUserDto, req, res);
-  }
+  async login(@Body() logInUserDto: LogInUserDto, @Res() res: Response) {
+    const { user, session } = await this.authService.logIn(logInUserDto);
 
-  @Post('get-session')
-  async getSession(@Req() req: Request) {
-    return this.authService.getSession(req.body?.session);
+    res.cookie('session', session, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    });
+
+    return res.json({ user });
   }
 
   @Delete('logout')
