@@ -13,17 +13,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         name: {},
         avatar: {},
       },
-      authorize: async (credentials) => {
+      authorize: (credentials: any) => {
         let user = null;
 
-        // const res = await baseApi.post("/auth/login", credentials);
-        // const data: { user: User } = await res.data;
-
-        // user = data.user;
-
-        // if (!user) {
-        //   throw new Error("Invalid credentials.");
-        // }
+        if (credentials) {
+          user = credentials;
+        }
 
         return user;
       },

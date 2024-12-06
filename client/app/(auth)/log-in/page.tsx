@@ -5,6 +5,7 @@ import { Input, PasswordInput } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { ApiError } from "@/lib/api-error";
+import { baseApi } from "@/lib/api/baseApi";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -23,7 +24,15 @@ export default function LogIn() {
 
     try {
       setIsPending(true);
-      await logIn({ email, password });
+
+      const res = await baseApi.post("/auth/login", {
+        email,
+        password,
+      });
+
+      const data: { user: User } = res.data;
+
+      await logIn(data.user);
 
       window.location.href = "/chat";
     } catch (error) {

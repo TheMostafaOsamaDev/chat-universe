@@ -46,11 +46,6 @@ export class AuthService {
 
     const session = await this.sessionService.createSession(user);
 
-    // res.cookie('session', session, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === 'production',
-    // });
-
     return {
       user: {
         ...user.toJSON(),

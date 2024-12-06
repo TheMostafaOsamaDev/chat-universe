@@ -11,7 +11,7 @@ export const saveAuth = (session: string) => {
   });
 };
 
-export const logIn = async (cred: { email: string; password: string }) => {
+export const logIn = async (cred: User) => {
   await signIn("credentials", cred);
 };
 
