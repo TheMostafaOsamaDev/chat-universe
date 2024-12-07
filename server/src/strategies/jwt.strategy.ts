@@ -6,6 +6,7 @@ import { LogInUserDto } from 'src/auth/dto/login-user.dto';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
+    console.log('From JwtStrategy constructor');
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -14,9 +15,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   validate(payload: LogInUserDto) {
-    console.log('Inside JwtStrategy.validate');
-    console.log(payload);
-
     return payload;
   }
 }

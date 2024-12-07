@@ -2,8 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import session from 'express-session';
-import { SessionConfig } from './config/session.config';
 import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
@@ -12,9 +10,9 @@ async function bootstrap() {
   app.enableCors({
     origin: ['http://localhost:3000'],
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
-  app.use(session(SessionConfig));
   app.use(cookieParser());
 
   app.useGlobalPipes(new ValidationPipe());

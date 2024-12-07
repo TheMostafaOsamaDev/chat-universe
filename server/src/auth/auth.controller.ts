@@ -30,7 +30,7 @@ export class AuthController {
   async login(@Body() logInUserDto: LogInUserDto, @Res() res: Response) {
     const { user, session } = await this.authService.logIn(logInUserDto);
 
-    res.cookie('authorization', `Bearer ${session}`, {
+    res.cookie('Authorization', `Bearer ${session}`, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
     });

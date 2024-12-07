@@ -1,10 +1,21 @@
-import { Body, Controller, Get, Param, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { GetUserInfoDto } from './dto/get-user-info.dto';
 import { ApiResponse } from '@nestjs/swagger';
 import { GetChatDto } from './dto/get-chat.dto';
+import { JwtAuthGuard } from 'src/guards/jwt.guard';
+import { Request } from 'express';
 
 @Controller('chat')
+@UseGuards(JwtAuthGuard)
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
@@ -14,7 +25,8 @@ export class ChatController {
   }
 
   @Get('/all')
-  getAllUsers() {
+  getAllUsers(@Req() req: Request) {
+    console.log(req.user);
     return this.chatService.getAllChats();
   }
 
