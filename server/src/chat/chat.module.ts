@@ -5,10 +5,17 @@ import { ChatController } from './chat.controller';
 import { authProviders } from 'src/auth/auth.providers';
 import { DatabaseModule } from 'src/database/database.module';
 import { chatProviders } from './chat.providers';
+import { JwtStrategy } from 'src/strategies/jwt.strategy';
 
 @Module({
   imports: [DatabaseModule],
-  providers: [ChatGateway, ChatService, ...authProviders, ...chatProviders],
+  providers: [
+    ChatGateway,
+    ChatService,
+    ...authProviders,
+    ...chatProviders,
+    JwtStrategy,
+  ],
   controllers: [ChatController],
 })
 export class ChatModule {}

@@ -14,11 +14,17 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { Request, Response } from 'express';
 import { LogInUserDto } from './dto/login-user.dto';
 import { LocalGuard } from 'src/guards/local.guard';
+import { SessionService } from 'src/sessions/session.service';
+import { User } from './user.model';
+import { JwtAuthGuard } from 'src/guards/jwt.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly sessionService: SessionService,
+  ) {}
 
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
@@ -27,15 +33,21 @@ export class AuthController {
 
   @Post('login')
   @UseGuards(LocalGuard)
-  async login(@Body() logInUserDto: LogInUserDto, @Res() res: Response) {
-    const { user, session } = await this.authService.logIn(logInUserDto);
+  async logIn(@Req() req: Request, @Res() res: Response) {
+    const session = await this.sessionService.createSession(req.user as User);
 
     res.cookie('Authorization', `Bearer ${session}`, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
     });
 
-    return res.json({ user });
+    return res.send({ user: req.user });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('status')
+  getStatus() {
+    return { status: 'ok' };
   }
 
   // @Delete('logout')

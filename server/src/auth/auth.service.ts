@@ -3,15 +3,10 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { comparePassword, User } from './user.model';
 import { Model } from 'mongoose';
 import { LogInUserDto } from './dto/login-user.dto';
-import { Request, Response } from 'express';
-import { SessionService } from 'src/sessions/session.service';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    @Inject('User') private userModel: Model<User>,
-    private readonly sessionService: SessionService,
-  ) {}
+  constructor(@Inject('User') private userModel: Model<User>) {}
 
   async register(createUserDto: CreateUserDto) {
     const foundUser = await this.userModel.findOne({
@@ -44,14 +39,14 @@ export class AuthService {
       throw new BadRequestException('Wrong password');
     }
 
-    const session = await this.sessionService.createSession(user);
-
     return {
       user: {
-        ...user.toJSON(),
-        password: undefined,
+        _id: user._id,
+        email: user.email,
+        username: user.username,
+        name: user.name,
+        avatar: user.avatar,
       },
-      session,
     };
   }
 }

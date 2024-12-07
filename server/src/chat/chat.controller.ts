@@ -40,4 +40,10 @@ export class ChatController {
   async getUser(@Param('id') id: string): Promise<GetUserInfoDto> {
     return await this.chatService.getUser(id);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('status')
+  getStatus() {
+    return { status: 'ok' };
+  }
 }
