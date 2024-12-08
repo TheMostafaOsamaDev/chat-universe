@@ -10,7 +10,7 @@ class SocketClient {
   public static getInstance(): Socket {
     if (!SocketClient.instance) {
       SocketClient.instance = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
-        autoConnect: false,
+        withCredentials: true,
       });
     }
 

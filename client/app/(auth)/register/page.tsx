@@ -22,11 +22,11 @@ export default function Register() {
         description: ApiError.generate(error).message,
       });
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         description: "Registration successful",
       });
-      router.push("/log-in");
+      router.push("/log-in?email=" + data.email);
     },
   });
 

@@ -1,15 +1,33 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class WsGatewayGuard implements CanActivate {
-  canActivate(
-    context: ExecutionContext,
-  ): boolean /* : boolean | Promise<boolean> | Observable<boolean>  */ {
-    const client = context.switchToWs().getClient();
+  constructor(private jwtService: JwtService) {}
 
-    // console.log('=====================================');
-    // console.log(client);
+  canActivate(context: ExecutionContext) {
+    try {
+      const client = context.switchToWs().getClient();
+      const headers = client.handshake.headers;
+      const cookies = headers?.cookie;
+
+      if (!cookies) {
+        return false;
+      }
+
+      const token = cookies
+        .split(';')
+        .find((cookie) => cookie.includes('Authorization'));
+
+      if (!token) {
+        return false;
+      }
+
+      const [_, jwt] = token.split('=');
+      this.jwtService.verify(jwt);
+    } catch (error) {
+      return false;
+    }
 
     return true;
   }

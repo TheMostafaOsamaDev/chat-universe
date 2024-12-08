@@ -5,12 +5,14 @@ import { Model } from 'mongoose';
 import { User } from 'src/auth/user.model';
 import { Chat } from './chat.model';
 import { GetChatDto } from './dto/get-chat.dto';
+import { Conversation } from './conversation.model';
 
 @Injectable()
 export class ChatService {
   constructor(
     @Inject('User') private userModel: Model<User>,
     @Inject('Chat') private chatModel: Model<Chat>,
+    @Inject('Conversation') private conversationModel: Model<Conversation>,
   ) {}
 
   changeUserStatus(userId: string, isOnline: boolean, socketid: string) {
@@ -30,9 +32,7 @@ export class ChatService {
     }
   }
 
-  async getAllChats() {
-
-  }
+  async getAllChats(userId: string) {}
 
   searchUsers(value: string) {
     const emailRegex = new RegExp(`^[^@]*${value}`, 'i');
@@ -77,10 +77,29 @@ export class ChatService {
       throw new Error('Invalid user');
     }
 
+    const participants = [userId, userChattingWithId].sort();
+
+    let conversation = await this.conversationModel.findOne({
+      user1: participants[0],
+      user2: participants[1],
+    });
+
+    if (!conversation) {
+      conversation = await this.conversationModel.create({
+        user1: participants[0],
+        user2: participants[1],
+        lastMessage: message,
+      });
+    } else {
+      conversation.lastMessage = message;
+      await conversation.save();
+    }
+
     const chat = new this.chatModel({
       message,
       sender: userId,
       receiver: userChattingWithId,
+      conversation: conversation._id,
     });
 
     return {

@@ -2,6 +2,9 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({ timestamps: true })
 export class Chat {
+  @Prop({ required: true, ref: 'Conversation' })
+  conversation: string;
+
   @Prop({ required: true })
   message: string;
 

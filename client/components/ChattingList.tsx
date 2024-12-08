@@ -19,7 +19,7 @@ export default function ChattingList() {
     throw new Error("userId must be a string");
   }
 
-  const { data, isError, error } = useQuery({
+  const { data } = useQuery({
     queryFn: async ({ signal }) =>
       getChat({ userId, userChattingWithId, signal }),
     queryKey: ["chat", userId, userChattingWithId],

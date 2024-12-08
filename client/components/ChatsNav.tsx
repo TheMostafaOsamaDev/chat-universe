@@ -3,7 +3,7 @@ import { Loader2, SearchIcon } from "lucide-react";
 import useSearch from "@/hooks/use-search";
 import { SingleChat, SingleChatSkeleton } from "./SingleChat";
 import UserInfo, { UserInfoSkeleton } from "./UserInfo";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { getAllUserChats } from "@/lib/api/tanstack/chat";
@@ -11,14 +11,13 @@ import { getAllUserChats } from "@/lib/api/tanstack/chat";
 export default function ChatsNav() {
   const { data: session } = useSession();
   const { setSearch, isPending, data, search } = useSearch();
-  const { data: userChats } = useQuery({
-    queryKey: ["chats", session?.user?._id],
-    enabled: !!session?.user,
+  const { data: userChats, isSuccess } = useQuery({
+    queryKey: ["AllChats"],
     queryFn: async ({ signal }) =>
       getAllUserChats({ userId: session?.user?._id, signal }),
   });
 
-  console.log(userChats);
+  // useEffect(() => {}, [isSuccess]);
 
   return (
     <div className="py-8 px-4 h-screen w-[320px] shadow-md flex flex-col gap-4">

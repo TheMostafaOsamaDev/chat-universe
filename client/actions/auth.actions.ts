@@ -18,3 +18,7 @@ export const logIn = async (cred: User) => {
 export const logOut = async () => {
   return await signOut();
 };
+
+export const getAuth = () => {
+  return cookies().get("authorization") || cookies().get("Authorization");
+};

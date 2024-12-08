@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Post,
   Req,
@@ -34,7 +33,7 @@ export class AuthController {
   async logIn(@Req() req: Request, @Res() res: Response) {
     const token = this.jwtService.sign(req.user);
 
-    res.cookie('Authorization', `Bearer ${token}`, {
+    res.cookie('Authorization', `${token}`, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
     });

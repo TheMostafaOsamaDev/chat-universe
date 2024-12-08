@@ -17,7 +17,9 @@ import { WebSocketErrorUtil } from 'src/utils/websocket-error.util';
 @ApiTags('chat')
 @WebSocketGateway(8080, {
   cors: {
-    origin: '*',
+    origin: ['http://localhost:3000'],
+    credentials: true,
+    allowedHeaders: ['Authorization'],
   },
 })
 @UseGuards(WsGatewayGuard)
@@ -64,9 +66,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     try {
       console.log('Sent message: ', body);
-      const messasge = await this.chatService.createMessage(body);
+      const message = await this.chatService.createMessage(body);
 
-      this.server.emit('savedMessage', messasge);
+      this.server.emit('savedMessage', message);
     } catch (error) {
       WebSocketErrorUtil.handleError(
         client,

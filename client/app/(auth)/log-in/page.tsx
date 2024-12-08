@@ -8,11 +8,13 @@ import { ApiError } from "@/lib/api-error";
 import { baseApi } from "@/lib/api/baseApi";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import React from "react";
 
 export default function LogIn() {
   const { toast } = useToast();
   const [isPending, setIsPending] = React.useState(false);
+  const searchParams = useSearchParams();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -57,7 +59,13 @@ export default function LogIn() {
         <form action="" className="space-y-3" onSubmit={handleSubmit}>
           <div>
             <Label htmlFor="email">Email</Label>
-            <Input type="email" id="email" required name="email" />
+            <Input
+              type="email"
+              id="email"
+              required
+              name="email"
+              defaultValue={searchParams.get("email") || ""}
+            />
           </div>
 
           <div>
