@@ -32,7 +32,17 @@ export class ChatService {
     }
   }
 
-  async getAllChats(userId: string) {}
+  async getAllChats(userId: string) {
+    const conversations = await this.conversationModel
+      .find({
+        $or: [{ user1: userId }, { user2: userId }],
+      })
+      .populate('user1 user2')
+      .select('-password -email -avatar -email -createdAt -updatedAt')
+      .limit(10);
+
+    return conversations;
+  }
 
   searchUsers(value: string) {
     const emailRegex = new RegExp(`^[^@]*${value}`, 'i');

@@ -31,13 +31,10 @@ export default function ChattingList() {
 
     if (instance) {
       instance.on("savedMessage", (newMessage) => {
-        console.log(newMessage);
         // Optimistically update the cache with the new message
         queryClient.setQueryData(
           ["chat", userId, userChattingWithId],
           (oldData: Message[]) => {
-            console.log(oldData);
-
             if (!oldData) return [newMessage];
 
             return [...oldData, newMessage];
