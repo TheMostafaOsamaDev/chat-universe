@@ -17,6 +17,8 @@ export default function ChatsNav() {
       getAllUserChats({ userId: session?.user?._id, signal }),
   });
 
+  // TODO: Adding chat list & handle new chats with websockets
+
   return (
     <div className="py-8 px-4 h-screen w-[320px] shadow-md flex flex-col gap-4">
       <div className="flex items-center gap-1 transition-colors border-2 border-transparent bg-secondary focus-within:bg-secondary/30 focus-within:border-primary/30 py-2 px-4 rounded">
