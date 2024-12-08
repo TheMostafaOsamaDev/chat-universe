@@ -8,13 +8,23 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     console.log('From JwtStrategy constructor');
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
+      // jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+        ExtractJwt.fromHeader('authorization'),
+        (request) => {
+          return (
+            request?.cookies?.authorization || request?.cookies?.Authorization
+          );
+        },
+      ]),
+      ignoreExpiration: true,
       secretOrKey: process.env.JWT_SECRET,
     });
   }
 
   validate(payload: LogInUserDto) {
+    console.log(payload);
     return payload;
   }
 }

@@ -3,7 +3,6 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { authProviders } from './auth.providers';
 import { DatabaseModule } from 'src/database/database.module';
-import { SessionService } from 'src/sessions/session.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from 'src/strategies/local.strategy';
@@ -19,12 +18,6 @@ import { JwtStrategy } from 'src/strategies/jwt.strategy';
     PassportModule,
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    SessionService,
-    ...authProviders,
-    LocalStrategy,
-    JwtStrategy,
-  ],
+  providers: [AuthService, ...authProviders, LocalStrategy, JwtStrategy],
 })
 export class AuthModule {}

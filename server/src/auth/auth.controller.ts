@@ -12,18 +12,16 @@ import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Request, Response } from 'express';
-import { LogInUserDto } from './dto/login-user.dto';
 import { LocalGuard } from 'src/guards/local.guard';
-import { SessionService } from 'src/sessions/session.service';
-import { User } from './user.model';
 import { JwtAuthGuard } from 'src/guards/jwt.guard';
+import { JwtService } from '@nestjs/jwt';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly sessionService: SessionService,
+    private jwtService: JwtService,
   ) {}
 
   @Post('register')
@@ -34,9 +32,9 @@ export class AuthController {
   @Post('login')
   @UseGuards(LocalGuard)
   async logIn(@Req() req: Request, @Res() res: Response) {
-    const session = await this.sessionService.createSession(req.user as User);
+    const token = this.jwtService.sign(req.user);
 
-    res.cookie('Authorization', `Bearer ${session}`, {
+    res.cookie('Authorization', `Bearer ${token}`, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
     });

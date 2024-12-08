@@ -53,3 +53,22 @@ export const getChat = async ({
 
   return resData;
 };
+
+export const getAllUserChats = async ({
+  userId,
+  signal,
+}: {
+  userId?: string;
+  signal?: AbortSignal;
+}) => {
+  if (!userId) return [];
+
+  const res = await baseApi.get(`/chat/all`, {
+    signal,
+    params: { userId },
+  });
+
+  const resData: any[] = res.data;
+
+  return resData;
+};
