@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 import { baseApi } from "../baseApi";
 
 export const searchUsers = async ({
@@ -63,12 +64,12 @@ export const getAllUserChats = async ({
 }) => {
   if (!userId) return [];
 
-  const res = await baseApi.get(`/chat/all`, {
+  const res: AxiosResponse<UserChat[]> = await baseApi.get(`/chat/all`, {
     signal,
     params: { userId },
   });
 
-  const resData: any[] = res.data;
+  const resData = res.data;
 
   return resData;
 };

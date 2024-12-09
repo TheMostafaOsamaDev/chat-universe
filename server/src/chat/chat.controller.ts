@@ -26,8 +26,7 @@ export class ChatController {
 
   @Get('/all')
   getAllUsers(@Req() req: Request) {
-    console.log(req.user);
-    return this.chatService.getAllChats(req?.user?.id || '');
+    return this.chatService.getAllChats(req?.user?._id || '');
   }
 
   @Get('search')

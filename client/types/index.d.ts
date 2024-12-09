@@ -26,6 +26,7 @@ type ChatUser = {
   username: string;
   email: string;
   avatar: string;
+  lastMessage: string;
 };
 
 type SocketError = {
@@ -40,6 +41,15 @@ type Message = {
   isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
+};
+
+type UserChat = {
+  _id: string;
+  isBlocked: boolean;
+  isDeleted: boolean;
+  lastMessage: string;
+  user1: User;
+  user2: User;
 };
 
 interface IUser extends User {}

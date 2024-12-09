@@ -26,7 +26,7 @@ export function SingleChat({ chat }: { chat: ChatUser }) {
 
         <div>
           <h5>{sliceText(chat.name)}</h5>
-          <p className="text-sm text-slate-500">Latest messdssd</p>
+          <p className="text-sm text-slate-500">{chat.lastMessage}</p>
         </div>
       </div>
     </Link>

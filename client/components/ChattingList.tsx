@@ -35,9 +35,9 @@ export default function ChattingList() {
         queryClient.setQueryData(
           ["chat", userId, userChattingWithId],
           (oldData: Message[]) => {
-            if (!oldData) return [newMessage];
+            if (!oldData) return [newMessage.chat];
 
-            return [...oldData, newMessage];
+            return [...oldData, newMessage.chat];
           }
         );
       });

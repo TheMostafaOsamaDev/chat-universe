@@ -33,6 +33,7 @@ export class ChatService {
   }
 
   async getAllChats(userId: string) {
+    console.log('~~~~~~~~~~~~~~~~~~~~ User ID:', userId);
     const conversations = await this.conversationModel
       .find({
         $or: [{ user1: userId }, { user2: userId }],
@@ -112,8 +113,11 @@ export class ChatService {
       conversation: conversation._id,
     });
 
+    await chat.save();
+
     return {
-      ...(await chat.save()).toJSON(),
+      chat: chat.toJSON(),
+      conversation: conversation.toJSON(),
     };
   }
 }
