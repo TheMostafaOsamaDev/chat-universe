@@ -52,7 +52,7 @@ export default function ChattingList() {
 
   return (
     <>
-      <div className="flex-1 flex flex-col justify-end gap-3 max-h-[75vh] overflow-y-auto">
+      <div className="flex-1 flex flex-col gap-3 max-h-[75vh] overflow-y-auto">
         {data?.map((message, i) => (
           <ChatBubble key={i} message={message} userId={session?.user?._id} />
         ))}
