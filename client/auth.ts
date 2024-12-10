@@ -8,7 +8,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       credentials: {
         _id: {},
         email: {},
-        password: {},
         username: {},
         name: {},
         avatar: {},

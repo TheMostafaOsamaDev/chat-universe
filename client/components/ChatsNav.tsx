@@ -13,7 +13,11 @@ export default function ChatsNav() {
   const queryClient = useQueryClient();
   const { data: session } = useSession();
   const { setSearch, isPending, data, search } = useSearch();
-  const { data: userChats, isSuccess } = useQuery({
+  const {
+    data: userChats,
+    isSuccess,
+    isPending: isGettingAllChats,
+  } = useQuery({
     queryKey: ["AllChats"],
     queryFn: async ({ signal }) =>
       getAllUserChats({ userId: session?.user?._id, signal }),
@@ -57,7 +61,7 @@ export default function ChatsNav() {
 
   let content;
 
-  if (isPending && search.length > 0) {
+  if ((isPending && search.length > 0) || isGettingAllChats) {
     content = <SkeletonChats />;
   } else if (isSuccess && userChats) {
     content = userChats.map((chat) => {

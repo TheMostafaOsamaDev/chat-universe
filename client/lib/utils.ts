@@ -10,5 +10,6 @@ export function getAvatarUrl(avatar: string) {
 }
 
 export function sliceText(text: string, length: number = 16) {
+  if (!text) return "";
   return text.length > length ? text.slice(0, length) + "..." : text;
 }
