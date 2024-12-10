@@ -3,10 +3,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { comparePassword, User } from './user.model';
 import { Model } from 'mongoose';
 import { LogInUserDto } from './dto/login-user.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(@Inject('User') private userModel: Model<User>) {}
+  constructor(
+    @Inject('User') private userModel: Model<User>,
+    private jwtService: JwtService,
+  ) {}
 
   async register(createUserDto: CreateUserDto) {
     const foundUser = await this.userModel.findOne({
@@ -47,6 +51,23 @@ export class AuthService {
         name: user.name,
         avatar: user.avatar,
       },
+    };
+  }
+
+  signToken(user: User | Express.User) {
+    const userDoc = {
+      _id: user._id,
+      email: user.email,
+      username: user.username,
+      name: user.name,
+      avatar: user.avatar,
+    };
+
+    const token = this.jwtService.sign(userDoc);
+
+    return {
+      token,
+      userDoc,
     };
   }
 }

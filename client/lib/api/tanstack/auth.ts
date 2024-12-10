@@ -13,3 +13,22 @@ export const logInFn = async (data: LogInType) => {
 
   return resData;
 };
+
+export const refreshAuth = async ({
+  user,
+  signal,
+}: {
+  user?: User;
+  signal: AbortSignal;
+}) => {
+  const res = await baseApi.post(
+    "/auth/refresh",
+    { user },
+    {
+      signal,
+    }
+  );
+  const resData: User = res.data;
+
+  return resData;
+};

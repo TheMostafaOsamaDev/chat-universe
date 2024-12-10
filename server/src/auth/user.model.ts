@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Schema({ timestamps: true })
 export class User {
+  _id: string;
+
   @Prop({ required: true })
   name: string;
 

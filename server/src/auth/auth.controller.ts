@@ -12,16 +12,12 @@ import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Request, Response } from 'express';
 import { LocalGuard } from 'src/guards/local.guard';
-import { JwtAuthGuard } from 'src/guards/jwt.guard';
-import { JwtService } from '@nestjs/jwt';
+import { User } from './user.model';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
@@ -31,20 +27,26 @@ export class AuthController {
   @Post('login')
   @UseGuards(LocalGuard)
   async logIn(@Req() req: Request, @Res() res: Response) {
-    const token = this.jwtService.sign(req.user);
+    const { token, userDoc } = this.authService.signToken(req.user);
 
     res.cookie('Authorization', `${token}`, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
     });
 
-    return res.send({ user: req.user });
+    return res.send({ user: userDoc });
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('status')
-  getStatus() {
-    return { status: 'ok' };
+  @Post('refresh')
+  async refresh(@Body() body: { user: User }, @Res() res: Response) {
+    const { token, userDoc } = this.authService.signToken(body.user);
+
+    res.cookie('Authorization', `${token}`, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    });
+
+    return res.send({ user: userDoc });
   }
 
   // @Delete('logout')
