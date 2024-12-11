@@ -1,83 +1,52 @@
 "use client";
-import React, { useEffect, useRef } from "react";
-import ChatBubble from "./ChatBubble";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import React from "react";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { Send } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
-import { getChat } from "@/lib/api/tanstack/chat";
-import SendMessage from "./SendMessage";
 import SocketClient from "@/app/socket";
 
-export default function ChattingList() {
-  const queryClient = useQueryClient();
+export default function SendMessage() {
   const { data: session } = useSession();
   const params = useParams();
-  const chatContainerRef = useRef<HTMLDivElement>(null); // Ref for the chat container
-  const userId = session?.user?._id;
-  const userChattingWithId = params.userId;
 
-  if (typeof userChattingWithId !== "string" || typeof userId !== "string") {
-    throw new Error("userId must be a string");
-  }
+  const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  const { data } = useQuery({
-    queryFn: async ({ signal }) =>
-      getChat({ userId, userChattingWithId, signal }),
-    queryKey: ["chat", userId, userChattingWithId],
-    enabled: !!userId && !!userChattingWithId,
-  });
+    const formData = new FormData(e.currentTarget);
 
-  useEffect(() => {
+    const userId = session?.user?._id;
+    const userChattingWithId = params.userId;
+    const message = formData.get("message");
+
+    if (userId !== session?.user?._id || !session?.user?._id) {
+      return;
+    }
+
     const instance = SocketClient.getInstance();
 
     if (instance) {
-      instance.on("savedMessage", (newMessage) => {
-        // Optimistically update the cache with the new message
-        queryClient.setQueryData(
-          ["chat", userId, userChattingWithId],
-          (oldData: Message[]) => {
-            if (!oldData) return [newMessage.chat];
-
-            return [...oldData, newMessage.chat];
-          }
-        );
-        // Scroll to the bottom when a new message arrives
-        chatContainerRef.current?.scrollTo({
-          top: chatContainerRef.current.scrollHeight,
-          behavior: "smooth",
-        });
+      instance.emit("sendMessage", {
+        userId,
+        userChattingWithId,
+        message,
       });
-    }
 
-    return () => {
-      if (instance) {
-        instance.off("savedMessage");
-      }
-    };
-  }, [queryClient, userId, userChattingWithId]);
-
-  useEffect(() => {
-    // Scroll to the bottom initially when messages are loaded
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTo({
-        top: chatContainerRef.current.scrollHeight,
-        behavior: "smooth",
-      });
+      e.currentTarget.reset();
     }
-  }, [data]);
+  };
 
   return (
-    <>
-      <div
-        className="flex-1 flex flex-col gap-3 max-h-[75vh] overflow-y-auto"
-        ref={chatContainerRef} // Attach ref to the chat container
-      >
-        {data?.map((message, i) => (
-          <ChatBubble key={i} message={message} userId={session?.user?._id} />
-        ))}
-      </div>
+    <form
+      className="flex items-center gap-4 border-t pt-5"
+      onSubmit={handleSendMessage}
+    >
+      <Input placeholder="Send a message" name="message" required />
 
-      <SendMessage />
-    </>
+      <Button className="rounded">
+        <Send />
+      </Button>
+    </form>
   );
 }

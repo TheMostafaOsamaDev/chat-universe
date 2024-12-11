@@ -18,16 +18,12 @@ export default function ChatBubble({
     hidden: {
       opacity: 0,
       scale: 0.8,
-      y: 50, // Start slightly below
+      y: 30, // Start slightly below
     },
     visible: {
       opacity: 1,
       scale: 1,
       y: 0, // Move to its normal position
-      transition: {
-        duration: 0.4,
-        ease: "easeOut",
-      },
     },
   };
 
