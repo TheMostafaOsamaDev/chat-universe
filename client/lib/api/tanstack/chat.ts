@@ -40,11 +40,6 @@ export const getChat = async ({
   userChattingWithId: string;
   signal?: AbortSignal;
 }) => {
-  console.log({
-    userId,
-    userChattingWithId,
-    signal,
-  });
   const res = await baseApi.get(`/chat`, {
     signal,
     params: { userId, userChattingWithId },

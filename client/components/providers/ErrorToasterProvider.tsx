@@ -15,7 +15,6 @@ export default function ErrorToasterProvider({
 
     if (instance) {
       instance.on("error", (error: SocketError) => {
-        console.log(error);
         toast({
           description: error.message,
           variant: "destructive",

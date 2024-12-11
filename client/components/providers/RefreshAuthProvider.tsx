@@ -28,7 +28,8 @@ export default function RefreshAuthProvider({
 
   return (
     <>
-      <AnimatePresence>
+      {children}
+      {/* <AnimatePresence>
         {isPending && (
           <motion.div
             key="loader"
@@ -42,7 +43,7 @@ export default function RefreshAuthProvider({
           </motion.div>
         )}
       </AnimatePresence>
-      {!isPending && children}
+      {!isPending && children} */}
     </>
   );
 }
