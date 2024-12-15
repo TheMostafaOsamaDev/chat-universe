@@ -25,7 +25,7 @@ export default function ChattingList() {
   }
 
   // Fetch chat data
-  const { data } = useQuery({
+  const { data, isPending } = useQuery({
     queryFn: async ({ signal }) =>
       getChat({ userId, userChattingWithId, signal }),
     queryKey: ["chat", userId, userChattingWithId],
@@ -115,21 +115,27 @@ export default function ChattingList() {
         className="flex-1 flex flex-col gap-3 h-[75vh] max-h-[75vh] overflow-y-auto custom-scrollbar relative"
         ref={chatContainerRef} // Attach ref to the chat container
       >
-        <Button
-          onClick={handleArrowClick}
-          className={`
-            size-10 rounded-full p-0 transition-all duration-300
-            ${isAtTop ? "transform rotate-180" : ""}
-            sticky  top-2 left-1/2 -translate-x-1/2 opacity-50 hover:opacity-100
-          `}
-        >
-          <ArrowUp />
-        </Button>
+        {!isPending && (
+          <Button
+            onClick={handleArrowClick}
+            className={`
+          size-10 rounded-full p-0 transition-all duration-300
+          ${isAtTop ? "transform rotate-180" : ""}
+          sticky  top-2 left-1/2 -translate-x-1/2 opacity-50 hover:opacity-100
+        `}
+          >
+            <ArrowUp />
+          </Button>
+        )}
 
         {/* Chat Messages */}
-        {data?.map((message, i) => (
-          <ChatBubble key={i} message={message} userId={session?.user?._id} />
-        ))}
+        {isPending ? (
+          <SkeletonMessages />
+        ) : (
+          data?.map((message, i) => (
+            <ChatBubble key={i} message={message} userId={session?.user?._id} />
+          ))
+        )}
       </div>
 
       {/* Send Message Component */}
@@ -137,3 +143,8 @@ export default function ChattingList() {
     </>
   );
 }
+
+const SkeletonMessages = () =>
+  Array.from({ length: 12 }).map((_, i) => (
+    <ChatBubble key={i} isSkeleton index={i} />
+  ));

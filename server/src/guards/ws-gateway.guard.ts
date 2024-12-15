@@ -26,6 +26,7 @@ export class WsGatewayGuard implements CanActivate {
       const [_, jwt] = token.split('=');
       this.jwtService.verify(jwt);
     } catch (error) {
+      console.log(error);
       return false;
     }
 

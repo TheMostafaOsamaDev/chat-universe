@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
+import { Skeleton } from "./ui/skeleton";
 
 export default function ChatBubble({
   message,
@@ -8,7 +9,7 @@ export default function ChatBubble({
   index,
   isSkeleton,
 }: {
-  message: Message;
+  message?: Message;
   userId?: string;
   index?: number;
   isSkeleton?: boolean;
@@ -27,18 +28,29 @@ export default function ChatBubble({
     },
   };
 
+  if (!isSkeleton)
+    return (
+      <motion.div
+        className={`p-3 px-5 rounded-full ${
+          message?.sender === userId
+            ? "self-end bg-secondary rounded-br-sm"
+            : "self-start bg-primary rounded-bl-sm text-white"
+        }`}
+        initial="hidden"
+        animate="visible"
+        variants={bubbleVariants}
+      >
+        {message?.message}
+      </motion.div>
+    );
+
   return (
-    <motion.div
-      className={`p-3 px-5 rounded-full ${
-        message.sender === userId
-          ? "self-end bg-secondary rounded-br-sm"
-          : "self-start bg-primary rounded-bl-sm text-white"
+    <Skeleton
+      className={`p-5 px-10 rounded-full bg-secondary ${
+        index && (index + 1) % 2 === 0
+          ? "self-end rounded-br-sm"
+          : "self-start rounded-bl-sm text-white"
       }`}
-      initial="hidden"
-      animate="visible"
-      variants={bubbleVariants}
-    >
-      {message.message}
-    </motion.div>
+    ></Skeleton>
   );
 }
