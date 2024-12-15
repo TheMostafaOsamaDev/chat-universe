@@ -1,10 +1,10 @@
 "use client";
 import { refreshAuth } from "@/lib/api/tanstack/auth";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+// import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import React, { useEffect } from "react";
-import { motion, AnimatePresence, delay } from "framer-motion";
+import { useEffect } from "react";
+// import { motion, AnimatePresence, delay } from "framer-motion";
 
 export default function RefreshAuthProvider({
   children,
@@ -18,12 +18,12 @@ export default function RefreshAuthProvider({
     enabled: !!session?.user,
   });
 
-  const [isPending, setIsPending] = React.useState(true);
+  // const [isPending, setIsPending] = React.useState(true);
 
   useEffect(() => {
-    if (data) {
-      setIsPending(false);
-    }
+    // if (data) {
+    //   setIsPending(false);
+    // }
   }, [data]);
 
   return (

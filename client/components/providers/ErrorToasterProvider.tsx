@@ -27,7 +27,7 @@ export default function ErrorToasterProvider({
         instance.off("error");
       }
     };
-  }, []);
+  }, [toast]);
 
   return children;
 }

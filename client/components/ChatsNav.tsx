@@ -57,7 +57,7 @@ export default function ChatsNav() {
     return () => {
       instance.disconnect();
     };
-  }, [userChats]);
+  }, [userChats, queryClient]);
 
   let content;
 

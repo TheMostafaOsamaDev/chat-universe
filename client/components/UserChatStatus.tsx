@@ -23,7 +23,7 @@ export default function UserChatStatus({
     return () => {
       instance.off("changeUserStatus");
     };
-  }, []);
+  }, [userId]);
 
   return (
     <span

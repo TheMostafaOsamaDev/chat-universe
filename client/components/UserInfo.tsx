@@ -19,8 +19,6 @@ export default function UserInfo() {
     if (session?.user && !isActive) {
       instance.connect();
 
-      // TODO: Emit changeStatus event to update user status
-
       instance.on("connect", () => {
         const socketId = instance.id;
         instance.emit("userConnected", {
@@ -33,7 +31,6 @@ export default function UserInfo() {
     }
 
     return () => {
-      // Send offline status before disconnecting
       if (session?.user) {
         const instance = SocketClient.getInstance();
         instance.emit("changeStatus", {
@@ -45,7 +42,7 @@ export default function UserInfo() {
 
       setIsActive(false);
     };
-  }, [session]);
+  }, [session, isActive]);
 
   if (!session) {
     return <UserInfoSkeleton />;

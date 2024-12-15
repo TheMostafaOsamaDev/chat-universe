@@ -26,7 +26,9 @@ export default function ChattingUserInfo() {
   } else if (error) {
     content = (
       <div className="flex flex-col gap-2 font-medium">
-        <p className="text-red-700 text-xl">Sorry couldn't get the user info</p>
+        <p className="text-red-700 text-xl">
+          Sorry couldn&apos;t get the user info
+        </p>
 
         <span className="text-sm">Please try again later</span>
       </div>
