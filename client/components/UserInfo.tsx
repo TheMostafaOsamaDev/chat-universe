@@ -1,5 +1,5 @@
 "use client";
-import { LogOut } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Button } from "./ui/button";
 import { logOut } from "@/actions/auth.actions";
@@ -8,6 +8,7 @@ import Image from "next/image";
 import { getAvatarUrl, sliceText } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import SocketClient from "@/app/socket";
+import Link from "next/link";
 
 export default function UserInfo() {
   const { data: session } = useSession();
@@ -49,7 +50,7 @@ export default function UserInfo() {
   }
 
   return (
-    <div className="bg-secondary rounded flex items-center gap-3 px-3 py-2">
+    <div className="bg-secondary rounded flex items-center gap-8 px-3 py-2">
       <div className="flex gap-2 items-center flex-1">
         <Image
           src={getAvatarUrl(session.user.avatar)}
@@ -59,16 +60,28 @@ export default function UserInfo() {
           className="size-10 rounded-full"
         />
 
-        <h4>{sliceText(session.user.name)}</h4>
+        <h4 className="text-nowrap">{sliceText(session.user.name)}</h4>
       </div>
 
-      <Button
-        className="w-fit text-red-600 hover:text-red-700 flex items-center gap-1 focus-visible:ring-red-700"
-        variant={"ghost"}
-        onClick={async () => await logOut()}
-      >
-        <LogOut />
-      </Button>
+      <div className="flex items-center gap-2">
+        <Button
+          className="w-fit flex items-center gap-1 p-2"
+          variant={"secondary"}
+          asChild
+        >
+          <Link href={"/chat/profile"}>
+            <Settings />
+          </Link>
+        </Button>
+
+        <Button
+          className="w-fit flex items-center gap-1 text-red-600 hover:text-red-700  focus-visible:ring-red-700 p-2"
+          variant={"secondary"}
+          onClick={async () => await logOut()}
+        >
+          <LogOut />
+        </Button>
+      </div>
     </div>
   );
 }
