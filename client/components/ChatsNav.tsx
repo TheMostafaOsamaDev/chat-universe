@@ -37,7 +37,7 @@ export default function ChatsNav() {
           else {
             const updatedChat = {
               ...old[chatIndex],
-              lastMessage: newMessage.message,
+              lastMessage: newMessage?.conversation?.lastMessage,
             };
 
             const updatedChats = [...old];

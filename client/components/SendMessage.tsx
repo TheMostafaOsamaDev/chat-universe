@@ -20,12 +20,6 @@ export default function SendMessage() {
     const userChattingWithId = params.userId;
     const message = formData.get("message");
 
-    console.log({
-      userId,
-      userChattingWithId,
-      message,
-    });
-
     if (userId !== session?.user?._id || !session?.user?._id) {
       return;
     }
