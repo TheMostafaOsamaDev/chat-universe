@@ -75,3 +75,6 @@ build
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Ignore folder old-client
+old-client
