@@ -29,7 +29,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${poppins_font.className} ${noto_serif_font.variable}`}>
+      <body
+        className={`${poppins_font.className} ${noto_serif_font.variable} relative`}
+      >
         <Providers>
           <Navbar />
           {children}

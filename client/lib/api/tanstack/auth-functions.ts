@@ -21,3 +21,12 @@ export const loginFn = async (data: LoginType) => {
 
   return resData;
 };
+
+export const verifyAuthFn = async ({ signal }: { signal?: AbortSignal }) => {
+  const res = await axiosBase.get("/auth/verify", {
+    signal,
+  });
+  const resData = res.data;
+
+  return resData;
+};

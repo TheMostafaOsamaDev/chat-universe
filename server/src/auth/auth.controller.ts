@@ -5,6 +5,7 @@ import {
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -13,6 +14,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { Request, Response } from 'express';
 import { LocalGuard } from 'src/guards/local.guard';
 import { User } from './user.model';
+import { JwtAuthGuard } from 'src/guards/jwt.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -24,8 +26,8 @@ export class AuthController {
     return this.authService.register(createUserDto);
   }
 
-  @Post('login')
   @UseGuards(LocalGuard)
+  @Post('login')
   async logIn(@Req() req: Request, @Res() res: Response) {
     const { token, userDoc } = this.authService.signToken(req.user);
 
@@ -37,27 +39,12 @@ export class AuthController {
     return res.send({ user: userDoc });
   }
 
-  @Post('refresh')
-  async refresh(@Body() body: { user: User }, @Res() res: Response) {
-    const { token, userDoc } = this.authService.signToken(body.user);
-
-    res.cookie('Authorization', `${token}`, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-    });
-
-    return res.send({ user: userDoc });
+  @Get('verify')
+  @UseGuards(JwtAuthGuard)
+  async refresh(@Req() req: Request) {
+    throw new UnauthorizedException();
+    return {
+      user: req.user,
+    };
   }
-
-  // @Delete('logout')
-  // async logout(@Req() req: Request, @Res() res: Response) {
-
-  //   req.session.destroy((err) => {
-  //     if (err) {
-  //       return res.status(500).send({ message: 'Error destroying session' });
-  //     }
-  //     res.clearCookie('connect.sid'); // Clear the session cookie
-  //     return res.send({ message: 'User logged out' });
-  //   });
-  // }
 }

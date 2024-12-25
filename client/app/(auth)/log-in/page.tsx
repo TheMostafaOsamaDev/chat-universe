@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { axiosBase } from "@/lib/api/axiosBase";
 import { loginFn } from "@/lib/api/tanstack/auth-functions";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
@@ -29,6 +30,10 @@ export default function LogIn() {
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
+
+    if (!email || !password)
+      return toast({ description: "Please fill in all fields" });
+
     logInMutate.mutate({ email, password });
   };
 
@@ -43,12 +48,12 @@ export default function LogIn() {
       >
         <div className="form-control">
           <Label htmlFor="email">Email</Label>
-          <Input type="email" id="email" />
+          <Input type="email" id="email" name="email" />
         </div>
 
         <div className="form-control">
           <Label htmlFor="password">Password</Label>
-          <Input type="password" id="password" />
+          <Input type="password" id="password" name="password" />
         </div>
 
         <Button className="w-full" disabled={logInMutate.isPending}>
