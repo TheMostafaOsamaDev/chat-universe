@@ -1,8 +1,10 @@
 "use client";
+import { AUTH_ROUTES, PROTECTED_ROUTES } from "@/constants";
 import { verifyAuthFn } from "@/lib/api/tanstack/auth-functions";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useRef } from "react";
 
 export default function VerifyAuthProvider({
@@ -16,11 +18,25 @@ export default function VerifyAuthProvider({
     refetchOnWindowFocus: false,
   });
   const lastExecutedRef = useRef(0);
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     if (!isPending) {
-      console.log(`Does it work? ${isSuccess} -- or -- error: ${isError}`);
       if (isError) {
+        const isProtectedRoute = PROTECTED_ROUTES.includes(pathname);
+
+        if (isProtectedRoute) {
+          router.push("/log-in");
+        }
+      }
+
+      if (isSuccess) {
+        const isAuthRoute = AUTH_ROUTES.includes(pathname);
+
+        if (isAuthRoute) {
+          router.push("/");
+        }
       }
     }
   }, [isPending, isError]);

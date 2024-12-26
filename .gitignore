@@ -78,3 +78,6 @@ next-env.d.ts
 
 # Ignore folder old-client
 old-client
+
+# Ignore notes.txt
+notes.txt

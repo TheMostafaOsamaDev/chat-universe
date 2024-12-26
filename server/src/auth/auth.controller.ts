@@ -13,7 +13,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Request, Response } from 'express';
 import { LocalGuard } from 'src/guards/local.guard';
-import { User } from './user.model';
 import { JwtAuthGuard } from 'src/guards/jwt.guard';
 
 @ApiTags('Auth')
@@ -42,7 +41,6 @@ export class AuthController {
   @Get('verify')
   @UseGuards(JwtAuthGuard)
   async refresh(@Req() req: Request) {
-    throw new UnauthorizedException();
     return {
       user: req.user,
     };
