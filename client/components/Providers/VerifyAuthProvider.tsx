@@ -12,7 +12,7 @@ export default function VerifyAuthProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const { isSuccess, isPending, isError, refetch } = useQuery({
+  const { isSuccess, isPending, isError, refetch, data } = useQuery({
     queryKey: ["verify-auth-provider"],
     queryFn: ({ signal }) => verifyAuthFn({ signal }),
     refetchOnWindowFocus: false,
@@ -20,6 +20,8 @@ export default function VerifyAuthProvider({
   const lastExecutedRef = useRef(0);
   const pathname = usePathname();
   const router = useRouter();
+
+  console.log(data);
 
   useEffect(() => {
     if (!isPending) {
@@ -42,11 +44,15 @@ export default function VerifyAuthProvider({
   }, [isPending, isError]);
 
   useEffect(() => {
-    const throttleTime = 5 * 60 * 1000; // 5 minutes in milliseconds
+    // const throttleTime = 5 * 60 * 1000; // 5 minutes in milliseconds
+    // Make it 10 seconds for testing
+    const throttleTime = 10 * 1000; // 10 seconds in milliseconds
 
     const interval = setInterval(() => {
       const now = Date.now();
+      console.log("Refetching...");
       if (now - lastExecutedRef.current >= throttleTime) {
+        console.log("Now we really refetch");
         lastExecutedRef.current = now;
         refetch();
       }

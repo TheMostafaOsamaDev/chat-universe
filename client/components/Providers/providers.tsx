@@ -8,10 +8,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <VerifyAuthProvider>
-          {children}
-          <Toaster />
-        </VerifyAuthProvider>
+        {/* <VerifyAuthProvider> */}
+        {children}
+        <Toaster />
+        {/* </VerifyAuthProvider> */}
       </ThemeProvider>
     </QueryClientProvider>
   );

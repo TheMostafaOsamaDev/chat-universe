@@ -1,0 +1,17 @@
+{
+  "folders": [
+    {
+      "path": "D:\\my-work\\chat-universe\\client",
+      "name": "Client"
+    },
+    {
+      "path": "D:\\my-work\\chat-universe\\server",
+      "name": "Server"
+    },
+    {
+      "path": "D:\\my-work\\chat-universe\\old-client",
+      "name": "Old Client"
+    }
+  ],
+  "settings": {}
+}
