@@ -1,29 +1,36 @@
 "use client";
+import { logIn } from "@/actions/auth.action";
 import LoadingStatus from "@/components/LoadingStatus";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { axiosBase } from "@/lib/api/axiosBase";
 import { loginFn } from "@/lib/api/tanstack/auth-functions";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 
 export default function LogIn() {
   const { toast } = useToast();
-  const router = useRouter();
   const logInMutate = useMutation({
     mutationKey: ["logIn"],
     mutationFn: loginFn,
-    onSuccess: () => {
+  });
+
+  const handleSuccess = async (data: IUser) => {
+    if (data) {
+      await logIn(data);
       toast({
         description: "You have successfully logged in",
       });
-      router.push("/");
-    },
-  });
+    }
+  };
+
+  useEffect(() => {
+    if (logInMutate.data) {
+      handleSuccess(logInMutate.data.user);
+    }
+  }, [logInMutate.data]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

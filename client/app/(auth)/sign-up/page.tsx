@@ -33,12 +33,10 @@ export default function SignUp() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    if (!name || !email || !password) {
-      toast({
+    if (!name || !email || !password)
+      return toast({
         description: "Please fill in all fields",
       });
-      return;
-    }
 
     registerMutate.mutate({
       email,

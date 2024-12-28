@@ -17,7 +17,7 @@ export const registerFn = async (data: RegisterType) => {
 
 export const loginFn = async (data: LoginType) => {
   const res = await axiosBase.post("/auth/login", data);
-  const resData = res.data;
+  const resData: { user: IUser } = res.data;
 
   return resData;
 };
