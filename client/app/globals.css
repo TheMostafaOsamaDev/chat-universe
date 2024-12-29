@@ -126,4 +126,14 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Headers */
+
+  h1 {
+    @apply text-4xl font-bold;
+  }
+
+  h2 {
+    @apply text-3xl font-bold;
+  }
 }

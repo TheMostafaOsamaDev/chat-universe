@@ -5,24 +5,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { loginFn } from "@/lib/api/tanstack/auth-functions";
+import { signIn } from "@/lib/auth-client";
 import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import React, { useRef } from "react";
 
 export default function LogIn() {
   const { toast } = useToast();
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const logInMutate = useMutation({
     mutationKey: ["logIn"],
     mutationFn: loginFn,
   });
-
-  const handleSuccess = async (data: IUser) => {};
-
-  useEffect(() => {
-    if (logInMutate.data) {
-      handleSuccess(logInMutate.data.user);
-    }
-  }, [logInMutate.data]);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,7 +30,27 @@ export default function LogIn() {
     if (!email || !password)
       return toast({ description: "Please fill in all fields" });
 
-    logInMutate.mutate({ email, password });
+    try {
+      await logInMutate.mutateAsync({ email, password });
+
+      await signIn.email(
+        {
+          email,
+          password: email,
+        },
+        {
+          onSuccess: () => router.push("/"),
+          onError: (ctx) => {
+            toast({ description: ctx.error.message, variant: "destructive" });
+          },
+        }
+      );
+    } catch (error) {
+      toast({
+        description: (error as AxiosError).message,
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -63,7 +80,7 @@ export default function LogIn() {
       <div className="mt-8 text-center">
         <p>
           Don't have an account?
-          <Button asChild variant={"link"} className="w-fit">
+          <Button asChild variant={"link"} className="w-fit" ref={buttonRef}>
             <Link href={"/sign-up"}>Sign up</Link>
           </Button>
         </p>

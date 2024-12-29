@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { registerFn } from "@/lib/api/tanstack/auth-functions";
-import { signUp } from "@/lib/auth-client";
+import { deleteUser, signUp } from "@/lib/auth-client";
 import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -17,13 +18,10 @@ export default function SignUp() {
   const registerMutate = useMutation({
     mutationKey: ["register"],
     mutationFn: registerFn,
-    onSuccess: async () => {
-      // toast({ description: "Account created successfully" });
-      // router.push("/log-in");
-    },
     onError: (error) => {
       toast({ description: error.message, variant: "destructive" });
     },
+    onSuccess: () => router.push("/log-in"),
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -40,23 +38,24 @@ export default function SignUp() {
       });
 
     await signUp.email(
-      { email, name, password: email },
+      {
+        email,
+        name,
+        password: email,
+      },
       {
         onSuccess: () => {
-          toast({ description: "Account created successfully" });
-          // router.push("/log-in");
+          registerMutate.mutate({
+            email,
+            name,
+            password,
+          });
         },
-        onError: (error) => {
-          console.log(error);
+        onError: (ctx) => {
+          toast({ description: ctx.error.message, variant: "destructive" });
         },
       }
     );
-
-    // registerMutate.mutate({
-    //   email,
-    //   name,
-    //   password,
-    // });
   };
 
   return (
