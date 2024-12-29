@@ -81,3 +81,6 @@ old-client
 
 # Ignore notes.txt
 notes.txt
+
+# ./db/database.db in the client folder
+client/db/database.db

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { registerFn } from "@/lib/api/tanstack/auth-functions";
+import { signUp } from "@/lib/auth-client";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -16,9 +17,9 @@ export default function SignUp() {
   const registerMutate = useMutation({
     mutationKey: ["register"],
     mutationFn: registerFn,
-    onSuccess: () => {
-      toast({ description: "Account created successfully" });
-      router.push("/log-in");
+    onSuccess: async () => {
+      // toast({ description: "Account created successfully" });
+      // router.push("/log-in");
     },
     onError: (error) => {
       toast({ description: error.message, variant: "destructive" });
@@ -38,11 +39,24 @@ export default function SignUp() {
         description: "Please fill in all fields",
       });
 
-    registerMutate.mutate({
-      email,
-      name,
-      password,
-    });
+    await signUp.email(
+      { email, name, password: email },
+      {
+        onSuccess: () => {
+          toast({ description: "Account created successfully" });
+          // router.push("/log-in");
+        },
+        onError: (error) => {
+          console.log(error);
+        },
+      }
+    );
+
+    // registerMutate.mutate({
+    //   email,
+    //   name,
+    //   password,
+    // });
   };
 
   return (
