@@ -1,5 +1,4 @@
 "use client";
-import { logIn } from "@/actions/auth.action";
 import LoadingStatus from "@/components/LoadingStatus";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,14 +16,7 @@ export default function LogIn() {
     mutationFn: loginFn,
   });
 
-  const handleSuccess = async (data: IUser) => {
-    if (data) {
-      await logIn(data);
-      toast({
-        description: "You have successfully logged in",
-      });
-    }
-  };
+  const handleSuccess = async (data: IUser) => {};
 
   useEffect(() => {
     if (logInMutate.data) {
