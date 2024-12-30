@@ -4,9 +4,14 @@ import { NextResponse, type NextRequest } from "next/server";
 
 type Session = typeof auth.$Infer.Session;
 
-export async function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAuthRoute = pathname === "/log-in" || pathname === "/sign-up";
+  const isProtectedRoute =
+    pathname === "/chat" ||
+    pathname.startsWith("/chat/") ||
+    pathname === "/profile";
+  console.log(pathname);
 
   const { data: session } = await betterFetch<Session>(
     "/api/auth/get-session",
@@ -24,7 +29,8 @@ export async function middleware(request: NextRequest) {
   }
 
   // If on protected routes and no session, redirect to /log-in
-  if (!isAuthRoute && !session) {
+
+  if (isProtectedRoute && !session) {
     return NextResponse.redirect(new URL("/log-in", request.url));
   }
 

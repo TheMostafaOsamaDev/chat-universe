@@ -6,7 +6,7 @@ export default function ChatLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <SidebarProvider>
-      <main>{children}</main>
+      <main className="h-[300vh] p-3">{children}</main>
     </SidebarProvider>
   );
 }

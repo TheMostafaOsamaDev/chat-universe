@@ -1,9 +1,15 @@
+"use client";
 import React from "react";
 import { Orbit } from "lucide-react";
 import Link from "next/link";
 import ThemeChanger from "./ThemeChanger";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
+  const pathname = usePathname();
+
+  if (pathname.includes("/chat")) return null;
+
   return (
     <header>
       <div className="container py-3 border-b flex items-center justify-between">

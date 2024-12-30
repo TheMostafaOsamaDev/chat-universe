@@ -5,7 +5,15 @@ import { Button } from "./ui/button";
 import { redirect } from "next/navigation";
 import { LogOut } from "lucide-react";
 
-export default function LogOutButton() {
+export default function LogOutButton({
+  text,
+  variant,
+  buttonClasses,
+}: {
+  text?: string;
+  variant?: "ghost" | "secondary";
+  buttonClasses?: string;
+}) {
   return (
     <form
       action={async () => {
@@ -17,9 +25,15 @@ export default function LogOutButton() {
 
         redirect("/log-in");
       }}
+      className="w-full"
     >
-      <Button type="submit" variant={"destructive"} size={"icon"}>
-        <LogOut />
+      <Button
+        type="submit"
+        variant={variant || "destructive"}
+        size={text ? "default" : "icon"}
+        className={buttonClasses + " w-full"}
+      >
+        <LogOut /> {text}
       </Button>
     </form>
   );

@@ -7,8 +7,18 @@ export const auth = betterAuth({
     fields: {
       email: "email",
       name: "name",
-      username: "username",
       avatar: "avatar",
+      mongoId: "mongoId",
+    },
+    additionalFields: {
+      mongoId: {
+        type: "string",
+        required: true,
+      },
+      username: {
+        type: "string",
+        required: true,
+      },
     },
     deleteUser: {
       enabled: true,

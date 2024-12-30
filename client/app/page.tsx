@@ -1,10 +1,7 @@
 import { auth } from "@/auth";
-import LogOutButton from "@/components/LogOutButton";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
 import { headers } from "next/headers";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 export default function Home() {
@@ -34,8 +31,6 @@ const MainButton = async () => {
           <Button asChild>
             <Link href={"/chat"}>Start chatting!</Link>
           </Button>
-
-          <LogOutButton />
         </div>
       </div>
     );

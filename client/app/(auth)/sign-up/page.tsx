@@ -15,9 +15,6 @@ export default function SignUp() {
   const registerMutate = useMutation({
     mutationKey: ["register"],
     mutationFn: registerFn,
-    onError: (error) => {
-      toast({ description: error.message, variant: "destructive" });
-    },
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -40,12 +37,15 @@ export default function SignUp() {
         password,
       })
       .then((data) => {
+        console.log(data);
         return signUp.email(
           {
             email,
             name,
             password: email,
             image: data.avatar,
+            mongoId: data._id,
+            username: data.username,
           },
           {
             onError: (ctx) => {
@@ -54,7 +54,10 @@ export default function SignUp() {
           }
         );
       })
-      .then(() => window.location.reload());
+      .then(() => window.location.reload())
+      .catch((error) => {
+        toast({ description: error.message, variant: "destructive" });
+      });
   };
 
   return (
