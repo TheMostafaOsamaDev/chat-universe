@@ -4,6 +4,9 @@ import { comparePassword, User } from './user.model';
 import { Model } from 'mongoose';
 import { LogInUserDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
+import { extname, join } from 'path';
+import { unlinkSync, writeFile } from 'fs';
+import sharp from 'sharp';
 
 @Injectable()
 export class AuthService {
@@ -69,5 +72,34 @@ export class AuthService {
       token,
       userDoc,
     };
+  }
+
+  // Get file and save it
+  async saveAvatar(file: Express.Multer.File, userId: string) {
+    const user = await this.userModel.findById(userId);
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    const outputPath = join(
+      __dirname,
+      '..',
+      '..',
+      'client',
+      'avatars',
+      // Change file ext
+      `${user._id}.webp`,
+    );
+
+    await sharp(file.path).resize(200).webp({ quality: 80 }).toFile(outputPath);
+
+    user.avatar = `/avatars/${user._id}.webp`;
+
+    await user.save();
+
+    user.password = null;
+
+    return user.toJSON();
   }
 }

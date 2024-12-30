@@ -5,7 +5,9 @@ import {
   Post,
   Req,
   Res,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
@@ -13,6 +15,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { Request, Response } from 'express';
 import { LocalGuard } from 'src/guards/local.guard';
 import { JwtAuthGuard } from 'src/guards/jwt.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorageConfig } from 'src/config/upload-avatar.config';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -20,11 +24,18 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  async register(@Body() createUserDto: CreateUserDto) {
+  async register(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
     const userDoc = await this.authService.register(createUserDto);
     userDoc.password = undefined;
 
-    return userDoc;
+    const { token } = this.authService.signToken(userDoc);
+
+    res.cookie('Authorization', `${token}`, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    });
+
+    return res.send(userDoc);
   }
 
   @UseGuards(LocalGuard)
@@ -46,5 +57,18 @@ export class AuthController {
     return {
       user: req.user,
     };
+  }
+
+  // TODO: Add intereceptor to handle file size
+  @Post('upload-avatar')
+  @UseInterceptors(FileInterceptor('file', diskStorageConfig))
+  @UseGuards(JwtAuthGuard)
+  async uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: Request,
+  ) {
+    const updatedUser = await this.authService.saveAvatar(file, req.user._id);
+
+    return updatedUser;
   }
 }
