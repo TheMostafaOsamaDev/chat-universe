@@ -9,6 +9,12 @@ type LoginType = {
   password: string;
 };
 
+type UpdateProfileType = {
+  username: string;
+  name: string;
+  oldUsername: string;
+};
+
 type User = {
   _id: string;
   name: string;

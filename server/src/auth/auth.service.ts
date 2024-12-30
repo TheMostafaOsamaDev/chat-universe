@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { extname, join } from 'path';
 import { unlinkSync, writeFile } from 'fs';
 import sharp from 'sharp';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -82,23 +83,47 @@ export class AuthService {
       throw new BadRequestException('User not found');
     }
 
+    const newName = `${user._id}_${Date.now()}.webp`;
+
     const outputPath = join(
       __dirname,
       '..',
       '..',
       'client',
       'avatars',
-      // Change file ext
-      `${user._id}.webp`,
+      newName,
     );
 
-    await sharp(file.path).resize(200).webp({ quality: 80 }).toFile(outputPath);
+    await sharp(file.path).resize(800).webp({ quality: 80 }).toFile(outputPath);
 
-    user.avatar = `/avatars/${user._id}.webp`;
+    // Delete the old avatar
+    if (user.avatar && !user.avatar.includes('default_avatar.png')) {
+      unlinkSync(join(__dirname, '..', '..', 'client', user.avatar));
+    }
+
+    user.avatar = `/avatars/${newName}`;
 
     await user.save();
 
     user.password = null;
+
+    return user.toJSON();
+  }
+
+  // Update user
+  async updateUser(updateUserDto: UpdateUserDto, userId: string) {
+    const user = await this.userModel
+      .findOne({ _id: userId, username: updateUserDto.oldUsername })
+      .select('name username');
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    user.name = updateUserDto.name || user.name;
+    user.username = updateUserDto.username || user.username;
+
+    await user.save();
 
     return user.toJSON();
   }

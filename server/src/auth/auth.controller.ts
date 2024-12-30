@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Post,
+  Put,
   Req,
   Res,
   UploadedFile,
@@ -17,6 +18,7 @@ import { LocalGuard } from 'src/guards/local.guard';
 import { JwtAuthGuard } from 'src/guards/jwt.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorageConfig } from 'src/config/upload-avatar.config';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -68,6 +70,17 @@ export class AuthController {
     @Req() req: Request,
   ) {
     const updatedUser = await this.authService.saveAvatar(file, req.user._id);
+
+    return updatedUser;
+  }
+
+  @Put('update-profile')
+  @UseGuards(JwtAuthGuard)
+  async updateUser(@Body() updateUserDto: UpdateUserDto, @Req() req: Request) {
+    const updatedUser = await this.authService.updateUser(
+      updateUserDto,
+      req.user._id,
+    );
 
     return updatedUser;
   }

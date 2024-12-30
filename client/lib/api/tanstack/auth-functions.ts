@@ -30,3 +30,10 @@ export const verifyAuthFn = async ({ signal }: { signal?: AbortSignal }) => {
 
   return resData;
 };
+
+export const updateProfileFn = async (data: UpdateProfileType) => {
+  const res = await axiosBase.put("/auth/update-profile", data);
+  const resData = res.data;
+
+  return resData;
+};

@@ -6,13 +6,13 @@ import { v4 as uuidv4 } from 'uuid';
 export class User {
   _id: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, minlength: 3, maxlength: 50 })
   name: string;
 
   @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true, unique: true, minlength: 6, maxlength: 22 })
   username: string;
 
   @Prop({ required: true })
@@ -42,16 +42,17 @@ UserSchema.pre('save', async function (next) {
 UserSchema.pre('save', function (next) {
   const user = this as any;
 
-  if (!user.isModified('username')) return next();
+  // Check if the document is new and if the username has not been modified
+  if (this.isNew) {
+    user.username =
+      `${user.username.toLowerCase()}_${uuidv4().slice(0, 8)}`.replace(
+        / /g,
+        '_',
+      );
+  }
 
-  user.username =
-    `${user.username.toLowerCase()} ${uuidv4().slice(0, 8)}`.replaceAll(
-      ' ',
-      '_',
-    );
   next();
 });
-
 // Compare password
 export const comparePassword = async function (
   enteredPassword: string,

@@ -20,14 +20,17 @@ export default function AvatarUpload({ url }: { url: string }) {
     formData.append("file", file);
 
     try {
+      if (inputRef.current) {
+        // disable the input to prevent multiple uploads
+        inputRef.current.disabled = true;
+      }
+
       const res = await axiosBase.post("/auth/upload-avatar", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
       const data = await res.data;
-
-      console.log(data);
 
       await updateUser(
         {
@@ -42,7 +45,12 @@ export default function AvatarUpload({ url }: { url: string }) {
         }
       );
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    } finally {
+      if (inputRef.current) {
+        // enable the input
+        inputRef.current.disabled = false;
+      }
     }
   };
 
@@ -53,7 +61,7 @@ export default function AvatarUpload({ url }: { url: string }) {
         <AvatarFallback />
       </Avatar>
 
-      <div className="absolute bottom-0 right-0 overflow-hidden cursor-pointer">
+      <div className="absolute bottom-2 right-2 overflow-hidden cursor-pointer">
         <Button
           className="rounded-full p-5"
           variant={"outline"}
