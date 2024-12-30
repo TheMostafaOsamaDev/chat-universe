@@ -3,13 +3,13 @@ import LoadingStatus from "@/components/LoadingStatus";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { formatAxiosError } from "@/helpers/format-axios-error";
 import { useToast } from "@/hooks/use-toast";
 import { loginFn } from "@/lib/api/tanstack/auth-functions";
 import { signIn } from "@/lib/auth-client";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React, { useRef } from "react";
 
 export default function LogIn() {
@@ -19,7 +19,6 @@ export default function LogIn() {
     mutationKey: ["logIn"],
     mutationFn: loginFn,
   });
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,7 +38,7 @@ export default function LogIn() {
           password: email,
         },
         {
-          onSuccess: () => router.push("/"),
+          onSuccess: () => window.location.reload(),
           onError: (ctx) => {
             toast({ description: ctx.error.message, variant: "destructive" });
           },
@@ -47,7 +46,7 @@ export default function LogIn() {
       );
     } catch (error) {
       toast({
-        description: (error as AxiosError).message,
+        description: formatAxiosError(error as AxiosError).message,
         variant: "destructive",
       });
     }
@@ -72,7 +71,10 @@ export default function LogIn() {
           <Input type="password" id="password" name="password" />
         </div>
 
-        <Button className="w-full" disabled={logInMutate.isPending}>
+        <Button
+          className="w-full"
+          disabled={logInMutate.isPending || logInMutate.isSuccess}
+        >
           {logInMutate.isPending ? <LoadingStatus /> : "Log in"}
         </Button>
       </form>

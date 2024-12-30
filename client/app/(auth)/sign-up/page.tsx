@@ -5,15 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { registerFn } from "@/lib/api/tanstack/auth-functions";
-import { deleteUser, signUp } from "@/lib/auth-client";
+import { signUp } from "@/lib/auth-client";
 import { useMutation } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function SignUp() {
-  const router = useRouter();
   const { toast } = useToast();
   const registerMutate = useMutation({
     mutationKey: ["register"],
@@ -21,7 +18,6 @@ export default function SignUp() {
     onError: (error) => {
       toast({ description: error.message, variant: "destructive" });
     },
-    onSuccess: () => router.push("/log-in"),
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -37,25 +33,28 @@ export default function SignUp() {
         description: "Please fill in all fields",
       });
 
-    await signUp.email(
-      {
+    registerMutate
+      .mutateAsync({
         email,
         name,
-        password: email,
-      },
-      {
-        onSuccess: () => {
-          registerMutate.mutate({
+        password,
+      })
+      .then((data) => {
+        return signUp.email(
+          {
             email,
             name,
-            password,
-          });
-        },
-        onError: (ctx) => {
-          toast({ description: ctx.error.message, variant: "destructive" });
-        },
-      }
-    );
+            password: email,
+            image: data.avatar,
+          },
+          {
+            onError: (ctx) => {
+              toast({ description: ctx.error.message, variant: "destructive" });
+            },
+          }
+        );
+      })
+      .then(() => window.location.reload());
   };
 
   return (
@@ -82,7 +81,10 @@ export default function SignUp() {
           <Input type="password" id="password" name="password" required />
         </div>
 
-        <Button className="w-full" disabled={registerMutate.isPending}>
+        <Button
+          className="w-full"
+          disabled={registerMutate.isPending || registerMutate.isSuccess}
+        >
           {registerMutate.isPending ? <LoadingStatus /> : "Sign Up"}
         </Button>
       </form>

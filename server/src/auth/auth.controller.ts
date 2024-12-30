@@ -21,7 +21,10 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
-    return this.authService.register(createUserDto);
+    const userDoc = await this.authService.register(createUserDto);
+    userDoc.password = undefined;
+
+    return userDoc;
   }
 
   @UseGuards(LocalGuard)

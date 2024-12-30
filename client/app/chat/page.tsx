@@ -1,10 +1,5 @@
-import LogOutButton from "@/components/LogOutButton";
 import React from "react";
 
-export default function page() {
-  return (
-    <div>
-      <LogOutButton />
-    </div>
-  );
+export default function ChatPage() {
+  return <div>Start Chatting now</div>;
 }
