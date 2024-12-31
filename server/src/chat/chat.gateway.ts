@@ -46,16 +46,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('userConnected')
-  async userConnected(@MessageBody() body: any) {
+  async userConnected(@ConnectedSocket() client: Socket) {
     this.server.emit('changeUserStatus', {
-      ...body,
       isOnline: true,
+      userId: client.user._id,
+      clientId: client.id,
     });
 
     return await this.chatService.changeUserStatus(
-      body.userId,
+      client.user._id,
       true,
-      body.socketId,
+      client.id,
     );
   }
 
@@ -65,11 +66,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     try {
-      console.log(body);
+      // console.log('Hello World');
+
+      // return body;
       const message = await this.chatService.createMessage(body);
 
       this.server.emit('savedMessage', message);
     } catch (error) {
+      console.log(error);
       WebSocketErrorUtil.handleError(
         client,
         body.userId,
