@@ -1,21 +1,11 @@
 "use client";
 
-import { SearchIcon } from "lucide-react";
+import { Loader2, SearchIcon } from "lucide-react";
 import { Input } from "./ui/input";
 import useSearchUsers from "@/hooks/use-search-users";
-import { useQuery } from "@tanstack/react-query";
-import { searchUsersFn } from "@/lib/api/tanstack/chat-functions";
 
 export default function SearchUsers() {
-  const { debouncedValue, setSearchValue } = useSearchUsers({ timeout: 800 });
-  const { data, isPending } = useQuery({
-    queryKey: ["searchUsers", debouncedValue],
-    queryFn: ({ signal }) =>
-      searchUsersFn({ signal, searchValue: debouncedValue }),
-    enabled: debouncedValue.length > 0,
-  });
-
-  console.log(data);
+  const { isLoading, setSearchValue } = useSearchUsers({ timeout: 800 });
 
   return (
     <>
@@ -30,8 +20,16 @@ export default function SearchUsers() {
             id="search"
             type="search"
             placeholder="Search..."
-            className="w-full rounded-lg bg-background pl-8 ring-1"
+            className="w-full rounded-lg bg-background px-8 ring-1"
           />
+
+          <div
+            className={`absolute right-2.5 top-3 h-4 w-4 text-muted-foreground animate-spin transition-opacity ${
+              isLoading ? "opacity-85" : "opacity-0"
+            }`}
+          >
+            <Loader2 className="h-4 w-4" />
+          </div>
         </div>
       </div>
 
