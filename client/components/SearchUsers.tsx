@@ -3,9 +3,19 @@
 import { SearchIcon } from "lucide-react";
 import { Input } from "./ui/input";
 import useSearchUsers from "@/hooks/use-search-users";
+import { useQuery } from "@tanstack/react-query";
+import { searchUsersFn } from "@/lib/api/tanstack/chat-functions";
 
 export default function SearchUsers() {
-  const { setSearchValue } = useSearchUsers({ timeout: 800 });
+  const { debouncedValue, setSearchValue } = useSearchUsers({ timeout: 800 });
+  const { data, isPending } = useQuery({
+    queryKey: ["searchUsers", debouncedValue],
+    queryFn: ({ signal }) =>
+      searchUsersFn({ signal, searchValue: debouncedValue }),
+    enabled: debouncedValue.length > 0,
+  });
+
+  console.log(data);
 
   return (
     <>

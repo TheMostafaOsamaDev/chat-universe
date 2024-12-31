@@ -19,6 +19,7 @@ export default function useSearchUsers({
   }, [searchValue]);
 
   return {
+    debouncedValue,
     setSearchValue,
   };
 }

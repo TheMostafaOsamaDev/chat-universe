@@ -42,7 +42,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { EllipsisVertical, LogOut, User } from "lucide-react";
+import { EllipsisVertical, User } from "lucide-react";
 import LogOutButton from "./LogOutButton";
 import Link from "next/link";
 import ThemeChanger from "./ThemeChanger";
