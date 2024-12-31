@@ -62,21 +62,25 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('sendMessage')
   async handleSendMessage(
-    @MessageBody() body: any,
+    @MessageBody() body: { message: string; userChattingWith: string },
     @ConnectedSocket() client: Socket,
   ) {
     try {
       // console.log('Hello World');
 
       // return body;
-      const message = await this.chatService.createMessage(body);
+      const message = await this.chatService.createMessage({
+        message: body.message,
+        userChattingWithId: body.userChattingWith,
+        userId: client.user._id,
+      });
 
       this.server.emit('savedMessage', message);
     } catch (error) {
       console.log(error);
       WebSocketErrorUtil.handleError(
         client,
-        body.userId,
+        client.user._id,
         error,
         "Can't send message",
       );
