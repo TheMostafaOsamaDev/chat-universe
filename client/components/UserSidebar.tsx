@@ -45,6 +45,7 @@ import { Button } from "./ui/button";
 import { EllipsisVertical, LogOut, User } from "lucide-react";
 import LogOutButton from "./LogOutButton";
 import Link from "next/link";
+import ThemeChanger from "./ThemeChanger";
 
 const UserDropdown = ({ username }: { username: string }) => {
   return (
@@ -58,7 +59,10 @@ const UserDropdown = ({ username }: { username: string }) => {
         <DropdownMenuLabel>{`@${username}`}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/profile">
+          <ThemeChanger isFull={true} />
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/profile" className="cursor-pointer">
             <User /> Profile
           </Link>
         </DropdownMenuItem>

@@ -56,7 +56,7 @@ export default function AvatarUpload({ url }: { url: string }) {
 
   return (
     <div className="relative">
-      <Avatar className="size-52">
+      <Avatar className="size-52  border-2">
         <AvatarImage src={getAvatar(url)} ref={avatarRef} />
         <AvatarFallback />
       </Avatar>
