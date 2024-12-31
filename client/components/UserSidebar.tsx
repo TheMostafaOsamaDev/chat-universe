@@ -56,7 +56,7 @@ const UserDropdown = ({ username }: { username: string }) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>{`@${username}`}</DropdownMenuLabel>
+        <DropdownMenuLabel className="py-3">{`@${username}`}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <ThemeChanger isFull={true} />

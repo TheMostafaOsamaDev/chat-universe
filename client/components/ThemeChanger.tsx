@@ -21,9 +21,7 @@ export default function ThemeChanger({ isFull }: { isFull?: boolean }) {
         }
       }}
     >
-      <div
-        className={`flex items-center ${isFull ? "!pl-6" : "justify-center "}`}
-      >
+      <div className={`${isFull && "flex items-center justify-center "}`}>
         <Sun
           className={`animate-rotate-in duration-100 dark:animate-rotate-out absolute ${
             isFull && "left-2"
@@ -36,7 +34,9 @@ export default function ThemeChanger({ isFull }: { isFull?: boolean }) {
           }`}
           size={35}
         />
-        {isFull ? "Change Theme" : null}
+        <div className={`text-left w-full ${isFull ? "!pl-4" : "hidden"}`}>
+          Change Theme
+        </div>
       </div>
     </Button>
   );
