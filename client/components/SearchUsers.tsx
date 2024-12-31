@@ -3,14 +3,17 @@
 import { Loader2, SearchIcon } from "lucide-react";
 import { Input } from "./ui/input";
 import useSearchUsers from "@/hooks/use-search-users";
+import { SingleChat } from "./SingleChat";
 
 export default function SearchUsers() {
-  const { isLoading, setSearchValue } = useSearchUsers({ timeout: 800 });
+  const { searchResults, isLoading, setSearchValue } = useSearchUsers({
+    timeout: 800,
+  });
 
   return (
     <>
       {/* <SearchInput /> */}
-      <div className="grid w-full max-w-sm items-center gap-1.5">
+      <div className="grid w-full max-w-sm items-center gap-1.5 mb-2">
         <div className="relative">
           <div className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground">
             <SearchIcon className="h-4 w-4" />
@@ -33,7 +36,11 @@ export default function SearchUsers() {
         </div>
       </div>
 
-      <div className="flex-1"></div>
+      <div className="flex-1">
+        {searchResults?.map((chat) => (
+          <SingleChat key={chat._id} chat={chat} />
+        ))}
+      </div>
     </>
   );
 }

@@ -30,8 +30,8 @@ export class ChatController {
   }
 
   @Get('search')
-  searchUsers(@Query('value') value: string) {
-    return this.chatService.searchUsers(value);
+  searchUsers(@Query('value') value: string, @Req() req: Request) {
+    return this.chatService.searchUsers(value, req.user._id);
   }
 
   @Get('/user/:id')

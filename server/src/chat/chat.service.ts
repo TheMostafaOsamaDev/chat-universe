@@ -44,15 +44,20 @@ export class ChatService {
     return conversations;
   }
 
-  searchUsers(value: string) {
+  searchUsers(value: string, userId: string) {
     const emailRegex = new RegExp(`^[^@]*${value}`, 'i');
 
     return this.userModel
       .find({
-        $or: [
-          { name: { $regex: value, $options: 'i' } },
-          { email: { $regex: emailRegex } },
-          { username: { $regex: value, $options: 'i' } },
+        $and: [
+          { _id: { $ne: userId } }, // Exclude the user with the specified userId
+          {
+            $or: [
+              { name: { $regex: value, $options: 'i' } },
+              { email: { $regex: emailRegex } },
+              { username: { $regex: value, $options: 'i' } },
+            ],
+          },
         ],
       })
       .select('-password')
