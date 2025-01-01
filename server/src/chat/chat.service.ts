@@ -36,7 +36,7 @@ export class ChatService {
         $or: [{ user1: userId }, { user2: userId }],
       })
       .populate('user1 user2')
-      .select('-password -email -avatar -email -createdAt -updatedAt')
+      .select('-password -email -avatar -email')
       .limit(10);
 
     return conversations;

@@ -8,9 +8,10 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllUserChats } from "@/lib/api/tanstack/chat-functions";
 
 export default function UserChats({ userId }: { userId: string }) {
-  const { searchResults, isLoading, setSearchValue } = useSearchUsers({
-    timeout: 800,
-  });
+  const { searchResults, debouncedValue, isLoading, setSearchValue } =
+    useSearchUsers({
+      timeout: 800,
+    });
   const { data: userChats } = useQuery({
     queryKey: ["allUserChats"],
     queryFn: ({ signal }) => getAllUserChats({ signal }),
@@ -44,9 +45,26 @@ export default function UserChats({ userId }: { userId: string }) {
       </div>
 
       <div className="flex-1">
-        {searchResults?.map((chat) => (
-          <SingleChat key={chat._id} chat={chat} />
-        ))}
+        {debouncedValue &&
+          searchResults?.map((chat) => (
+            <SingleChat key={chat._id} chat={chat} />
+          ))}
+
+        {!debouncedValue &&
+          userChats?.map((conv) => {
+            const user = conv.user1._id === userId ? conv.user2 : conv.user1;
+
+            const chat = {
+              _id: user._id,
+              lastMessage: conv.lastMessage,
+              name: user.name,
+              username: user.username,
+              email: user.email,
+              avatar: user.avatar,
+            };
+
+            return <SingleChat key={chat._id} chat={chat} />;
+          })}
       </div>
     </>
   );

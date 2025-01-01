@@ -57,6 +57,8 @@ type UserChat = {
   lastMessage: string;
   user1: User;
   user2: User;
+  createdAt: string;
+  updatedAt: string;
 };
 
 type ChatMessage = {
