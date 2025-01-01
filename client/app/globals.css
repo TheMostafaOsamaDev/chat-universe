@@ -137,6 +137,31 @@ body {
   .noto-serif {
     font-family: var(--noto-serif);
   }
+  .chat-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.5) transparent;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.5);
+    border-radius: 9999px;
+    transition: opacity 150ms ease;
+    opacity: 0.2;
+  }
+
+  .chat-scrollbar:hover::-webkit-scrollbar-thumb {
+    opacity: 1;
+    background: hsl(var(--muted-foreground) / 0.8);
+  }
 }
 
 @layer base {

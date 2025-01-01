@@ -4,24 +4,23 @@ import { getChat } from "@/lib/api/tanstack/chat-functions";
 import { SocketClient } from "@/lib/socket-client";
 import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Socket } from "socket.io-client";
 import ChatBubble, { ChatBubbleSkeleton } from "./ChatBubble";
 
-// Move queryClient initialization outside the component
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // Data remains fresh for 5 minutes
+      staleTime: 1000 * 60 * 5,
     },
   },
 });
 
 export default function ChattingList({ userId }: { userId: string }) {
   const params = useParams<{ userId: string }>();
-  const queryClient = useQueryClient(); // Use hook instead of global variable
+  const queryClient = useQueryClient();
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Define query key as a constant for consistency
   const getChatKey = ["chattingList", params.userId, userId];
 
   const { data, isLoading } = useQuery({
@@ -31,10 +30,16 @@ export default function ChattingList({ userId }: { userId: string }) {
         userChattingWithId: params.userId,
         signal,
       }),
-
     refetchOnWindowFocus: true,
     refetchInterval: 1000 * 30,
   });
+
+  // Scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [data]); // Dependency on data ensures scroll happens when messages change
 
   useEffect(() => {
     let socket: Socket = SocketClient.getInstance();
@@ -43,7 +48,6 @@ export default function ChattingList({ userId }: { userId: string }) {
       "savedMessage",
       (message: { chat: ChatMessage; conversation: Conversation }) => {
         queryClient.setQueryData(getChatKey, (oldData: ChatMessage[] = []) => {
-          // Prevent duplicate messages
           const messageExists = oldData.some(
             (chat) => chat._id === message.chat._id
           );
@@ -52,10 +56,17 @@ export default function ChattingList({ userId }: { userId: string }) {
             return oldData;
           }
 
+          // Scroll to bottom after adding new message
+          setTimeout(() => {
+            if (containerRef.current) {
+              containerRef.current.scrollTop =
+                containerRef.current.scrollHeight;
+            }
+          }, 0);
+
           return [...oldData, message.chat];
         });
 
-        // Optionally invalidate the query to trigger a refetch
         queryClient.invalidateQueries({ queryKey: getChatKey });
       }
     );
@@ -63,15 +74,33 @@ export default function ChattingList({ userId }: { userId: string }) {
     return () => {
       socket.off("savedMessage");
     };
-  }, [queryClient, getChatKey]); // Add dependencies
+  }, [queryClient, getChatKey]);
 
-  // max-h-[84.47vh]
+  // Function to handle smooth scrolling to bottom
+  const scrollToBottom = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollTo({
+        top: containerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  // Scroll to bottom on initial load
+  useEffect(() => {
+    if (!isLoading && data?.length) {
+      scrollToBottom();
+    }
+  }, [isLoading, data]);
+
   return (
     <div
-      className="flex flex-col gap-4 overflow-y-auto max-h-[]  py-3"
+      className="flex flex-col gap-4 overflow-y-auto p-3 chat-scrollbar"
       style={{
         flex: "1 1 auto",
+        scrollBehavior: "smooth", // Enable smooth scrolling
       }}
+      ref={containerRef}
     >
       {data?.map((chat) => (
         <ChatBubble key={chat._id} chat={chat} userId={userId} />
