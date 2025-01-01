@@ -34,6 +34,8 @@ type ChatUser = {
   email: string;
   avatar: string;
   lastMessage: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 type SocketError = {

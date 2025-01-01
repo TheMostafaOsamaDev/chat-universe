@@ -20,8 +20,8 @@ export default function ChattingList({ userId }: { userId: string }) {
   const params = useParams<{ userId: string }>();
   const queryClient = useQueryClient();
   const containerRef = useRef<HTMLDivElement>(null);
-
   const getChatKey = ["chattingList", params.userId, userId];
+  const allUserChatsKey = ["allUserChats", userId];
 
   const { data, isLoading } = useQuery({
     queryKey: getChatKey,
@@ -34,71 +34,66 @@ export default function ChattingList({ userId }: { userId: string }) {
     refetchInterval: 1000 * 30,
   });
 
-  // Scroll to bottom when new messages arrive
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
-    }
-  }, [data]); // Dependency on data ensures scroll happens when messages change
-
   useEffect(() => {
     let socket: Socket = SocketClient.getInstance();
 
     socket.on(
       "savedMessage",
       (message: { chat: ChatMessage; conversation: Conversation }) => {
+        // Update chat messages
         queryClient.setQueryData(getChatKey, (oldData: ChatMessage[] = []) => {
           const messageExists = oldData.some(
             (chat) => chat._id === message.chat._id
           );
-
-          if (messageExists) {
-            return oldData;
-          }
-
-          // Scroll to bottom after adding new message
-          setTimeout(() => {
-            if (containerRef.current) {
-              containerRef.current.scrollTop =
-                containerRef.current.scrollHeight;
-            }
-          }, 0);
-
+          if (messageExists) return oldData;
           return [...oldData, message.chat];
         });
 
+        // Update all user chats
+        queryClient.setQueryData(
+          allUserChatsKey,
+          (oldData: ChatUser[] = []) => {
+            if (!oldData) return oldData;
+
+            return oldData.map((chat) => {
+              if (chat._id === message.conversation._id) {
+                return {
+                  ...chat,
+                  lastMessage: message.chat.message,
+                  updatedAt: message.conversation.updatedAt,
+                };
+              }
+              return chat;
+            });
+          }
+        );
+
+        // Force refetch both queries
         queryClient.invalidateQueries({ queryKey: getChatKey });
+        queryClient.invalidateQueries({ queryKey: allUserChatsKey });
+
+        // Scroll to bottom
+        setTimeout(() => {
+          if (containerRef.current) {
+            containerRef.current.scrollTop = containerRef.current.scrollHeight;
+          }
+        }, 0);
       }
     );
 
     return () => {
       socket.off("savedMessage");
     };
-  }, [queryClient, getChatKey]);
+  }, [queryClient, getChatKey, allUserChatsKey]);
 
-  // Function to handle smooth scrolling to bottom
-  const scrollToBottom = () => {
-    if (containerRef.current) {
-      containerRef.current.scrollTo({
-        top: containerRef.current.scrollHeight,
-        behavior: "smooth",
-      });
-    }
-  };
-
-  // Scroll to bottom on initial load
-  useEffect(() => {
-    if (!isLoading && data?.length) {
-      scrollToBottom();
-    }
-  }, [isLoading, data]);
+  // Rest of the component remains the same...
 
   return (
     <div
       className="flex flex-col gap-4 overflow-y-auto p-3 chat-scrollbar"
       style={{
         flex: "1 1 auto",
-        scrollBehavior: "smooth", // Enable smooth scrolling
+        scrollBehavior: "smooth",
       }}
       ref={containerRef}
     >
