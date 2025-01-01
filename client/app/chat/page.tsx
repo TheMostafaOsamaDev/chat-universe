@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function ChatPage() {
   return (
-    <div className="h-full flex flex-col gap-6 items-center justify-center">
+    <div className="h-screen flex flex-col gap-6 items-center justify-center">
       <Image
         src="/svg/mailbox.svg"
         width={200}

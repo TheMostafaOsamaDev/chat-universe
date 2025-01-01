@@ -46,7 +46,7 @@ export const getChat = async ({
     params: { userChattingWithId },
   });
 
-  const resData = res.data;
+  const resData: ChatMessage[] = res.data;
 
   return resData;
 };

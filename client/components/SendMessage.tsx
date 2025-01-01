@@ -41,7 +41,10 @@ export default function SendMessage() {
   };
 
   return (
-    <form className="relative flex gap-4 h-[45px]" onSubmit={handleSubmit}>
+    <form
+      className="w-full py-3 bg-background flex gap-4"
+      onSubmit={handleSubmit}
+    >
       <Input
         placeholder="Send message"
         className="focus-visible:ring-offset-0 focus-visible:ring-0 border-2 focus-visible:border-primary h-full"

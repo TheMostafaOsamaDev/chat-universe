@@ -30,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${poppins_font.className} ${noto_serif_font.variable} relative`}
+        className={`${poppins_font.className} ${noto_serif_font.variable} relative overflow-hidden`}
       >
         <Providers>
           <Navbar />
