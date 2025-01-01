@@ -1,15 +1,9 @@
-import { auth } from "@/auth";
-import { headers } from "next/headers";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAvatar } from "@/helpers";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default async function UserSidebar() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user?.image)
+export default function UserSidebar({ user }: { user?: User }) {
+  if (!user?.image)
     return (
       <div className="flex items-center gap-3">
         <Skeleton className="size-12 rounded-full" />
@@ -20,15 +14,15 @@ export default async function UserSidebar() {
   return (
     <div className="flex items-center gap-3">
       <Avatar className="size-12">
-        <AvatarImage src={getAvatar(session?.user?.image)} />
+        <AvatarImage src={getAvatar(user.image)} />
         <AvatarFallback>
           <Skeleton className="size-12 rounded-full" />
         </AvatarFallback>
       </Avatar>
 
-      <p className="flex-1">{session.user.name}</p>
+      <p className="flex-1">{user.name}</p>
 
-      <UserDropdown username={session.user.username} />
+      <UserDropdown username={user.username} />
     </div>
   );
 }
@@ -42,7 +36,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { EllipsisVertical, User } from "lucide-react";
+import { EllipsisVertical, User as UserIcon } from "lucide-react";
 import LogOutButton from "./LogOutButton";
 import Link from "next/link";
 import ThemeChanger from "./ThemeChanger";
@@ -63,7 +57,7 @@ const UserDropdown = ({ username }: { username: string }) => {
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href="/profile" className="cursor-pointer">
-            <User /> Profile
+            <UserIcon /> Profile
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>

@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 import { axiosBase } from "../axiosBase";
 
 export const searchUsersFn = async ({
@@ -47,6 +48,16 @@ export const getChat = async ({
   });
 
   const resData: ChatMessage[] = res.data;
+
+  return resData;
+};
+
+export const getAllUserChats = async ({ signal }: { signal?: AbortSignal }) => {
+  const res: AxiosResponse<UserChat[]> = await axiosBase.get(`/chat/all`, {
+    signal,
+  });
+
+  const resData = res.data;
 
   return resData;
 };

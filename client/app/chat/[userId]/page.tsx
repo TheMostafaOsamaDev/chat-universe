@@ -1,9 +1,8 @@
 import { auth } from "@/auth";
+import AuthorizationAlert from "@/components/alerts/AuthorizationAlert";
 import ChattingList from "@/components/ChattingList";
 import ChattingUserInfo from "@/components/ChattingUserInfo";
 import SendMessage from "@/components/SendMessage";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
 import { headers } from "next/headers";
 import React from "react";
 
@@ -25,13 +24,5 @@ export default async function SingleChatPage() {
       </div>
     );
 
-  return (
-    <Alert variant="destructive">
-      <AlertCircle className="h-4 w-4" />
-      <AlertTitle>Error</AlertTitle>
-      <AlertDescription>
-        You need to be logged in to view this page
-      </AlertDescription>
-    </Alert>
-  );
+  return <AuthorizationAlert />;
 }

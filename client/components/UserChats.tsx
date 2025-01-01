@@ -4,11 +4,19 @@ import { Loader2, SearchIcon } from "lucide-react";
 import { Input } from "./ui/input";
 import useSearchUsers from "@/hooks/use-search-users";
 import { SingleChat } from "./SingleChat";
+import { useQuery } from "@tanstack/react-query";
+import { getAllUserChats } from "@/lib/api/tanstack/chat-functions";
 
-export default function SearchUsers() {
+export default function UserChats({ userId }: { userId: string }) {
   const { searchResults, isLoading, setSearchValue } = useSearchUsers({
     timeout: 800,
   });
+  const { data: userChats } = useQuery({
+    queryKey: ["allUserChats"],
+    queryFn: ({ signal }) => getAllUserChats({ signal }),
+  });
+
+  console.log(userChats);
 
   return (
     <>

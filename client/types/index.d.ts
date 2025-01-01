@@ -19,6 +19,7 @@ type User = {
   _id: string;
   name: string;
   username: string;
+  image: string;
   email: string;
   password: string;
   avatar: string;
@@ -49,14 +50,14 @@ type Message = {
   updatedAt: string;
 };
 
-// type UserChat = {
-//   _id: string;
-//   isBlocked: boolean;
-//   isDeleted: boolean;
-//   lastMessage: string;
-//   user1: User;
-//   user2: User;
-// };
+type UserChat = {
+  _id: string;
+  isBlocked: boolean;
+  isDeleted: boolean;
+  lastMessage: string;
+  user1: User;
+  user2: User;
+};
 
 type ChatMessage = {
   conversation: string; // ID of the conversation thread
