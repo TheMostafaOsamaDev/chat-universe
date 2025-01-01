@@ -1,10 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateChatDto } from './dto/create-chat.dto';
-import { UpdateChatDto } from './dto/update-chat.dto';
 import { Model } from 'mongoose';
 import { User } from 'src/auth/user.model';
 import { Chat } from './chat.model';
-import { GetChatDto } from './dto/get-chat.dto';
 import { Conversation } from './conversation.model';
 
 @Injectable()
@@ -72,7 +70,13 @@ export class ChatService {
     return user;
   }
 
-  async getChat({ userId, userChattingWithId }: GetChatDto) {
+  async getChat({
+    userId,
+    userChattingWithId,
+  }: {
+    userId: string;
+    userChattingWithId: string;
+  }) {
     const chat = await this.chatModel.find({
       $or: [
         { sender: userId, receiver: userChattingWithId },

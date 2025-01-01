@@ -66,9 +66,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     try {
-      // console.log('Hello World');
-
-      // return body;
       const message = await this.chatService.createMessage({
         message: body.message,
         userChattingWithId: body.userChattingWith,

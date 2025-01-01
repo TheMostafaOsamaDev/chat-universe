@@ -33,3 +33,20 @@ export const getUserInfo = async ({
     res.data;
   return resData;
 };
+
+export const getChat = async ({
+  userChattingWithId,
+  signal,
+}: {
+  userChattingWithId: string;
+  signal?: AbortSignal;
+}) => {
+  const res = await axiosBase.get(`/chat`, {
+    signal,
+    params: { userChattingWithId },
+  });
+
+  const resData = res.data;
+
+  return resData;
+};

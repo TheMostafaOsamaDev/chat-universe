@@ -20,8 +20,11 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @Get()
-  getChat(@Query() query: GetChatDto) {
-    return this.chatService.getChat(query);
+  getChat(@Query() query: GetChatDto, @Req() req: Request) {
+    return this.chatService.getChat({
+      userChattingWithId: query.userChattingWithId,
+      userId: req.user._id,
+    });
   }
 
   @Get('/all')
