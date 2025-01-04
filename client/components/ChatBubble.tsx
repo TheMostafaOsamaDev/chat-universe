@@ -13,7 +13,7 @@ export default function ChatBubble({
       className={`py-2 px-4 rounded-lg text-lg font-medium ${
         chat.sender === userId
           ? "self-end bg-secondary rounded-br-none"
-          : "self-start bg-primary rounded-bl-none"
+          : "self-start  text-white bg-primary rounded-bl-none"
       }`}
     >
       {chat.message}
