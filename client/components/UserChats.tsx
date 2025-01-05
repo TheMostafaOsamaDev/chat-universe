@@ -4,12 +4,8 @@ import { Loader2, SearchIcon } from "lucide-react";
 import { Input } from "./ui/input";
 import useSearchUsers from "@/hooks/use-search-users";
 import { SingleChat } from "./SingleChat";
-import { QueryClient, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getAllUserChats } from "@/lib/api/tanstack/chat-functions";
-import { useEffect } from "react";
-import { SocketClient } from "@/lib/socket-client";
-
-const queryClient = new QueryClient();
 
 export default function UserChats({ userId }: { userId: string }) {
   const userChatsQueryKey = ["allUserChats", userId];
@@ -47,7 +43,7 @@ export default function UserChats({ userId }: { userId: string }) {
         </div>
       </div>
 
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col gap-1">
         {debouncedValue &&
           searchResults?.map((chat) => (
             <SingleChat key={chat._id} chat={chat} />

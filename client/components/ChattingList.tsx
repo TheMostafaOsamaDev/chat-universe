@@ -23,7 +23,7 @@ export default function ChattingList({ userId }: { userId: string }) {
   const getChatKey = ["chattingList", params.userId, userId];
   const allUserChatsKey = ["allUserChats", userId];
 
-  const { data, isLoading } = useQuery({
+  const { data, isSuccess, isLoading } = useQuery({
     queryKey: getChatKey,
     queryFn: ({ signal }) =>
       getChat({
@@ -33,6 +33,18 @@ export default function ChattingList({ userId }: { userId: string }) {
     refetchOnWindowFocus: true,
     refetchInterval: 1000 * 30,
   });
+
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      if (containerRef.current) {
+        containerRef.current.scrollTop = containerRef.current.scrollHeight;
+      }
+    }, 0);
+  };
+
+  useEffect(() => {
+    if (isSuccess) scrollToBottom();
+  }, [isSuccess]);
 
   useEffect(() => {
     let socket: Socket = SocketClient.getInstance();
@@ -55,16 +67,22 @@ export default function ChattingList({ userId }: { userId: string }) {
           (oldData: ChatUser[] = []) => {
             if (!oldData) return oldData;
 
-            return oldData.map((chat) => {
-              if (chat._id === message.conversation._id) {
-                return {
-                  ...chat,
-                  lastMessage: message.chat.message,
-                  updatedAt: message.conversation.updatedAt,
-                };
-              }
-              return chat;
-            });
+            return oldData
+              .map((chat) => {
+                if (chat._id === message.conversation._id) {
+                  return {
+                    ...chat,
+                    lastMessage: message.chat.message,
+                    updatedAt: message.conversation.updatedAt,
+                  };
+                }
+                return chat;
+              })
+              .sort(
+                (a, b) =>
+                  new Date(b.updatedAt).getTime() -
+                  new Date(a.updatedAt).getTime()
+              );
           }
         );
 
@@ -73,11 +91,7 @@ export default function ChattingList({ userId }: { userId: string }) {
         queryClient.invalidateQueries({ queryKey: allUserChatsKey });
 
         // Scroll to bottom
-        setTimeout(() => {
-          if (containerRef.current) {
-            containerRef.current.scrollTop = containerRef.current.scrollHeight;
-          }
-        }, 0);
+        scrollToBottom();
       }
     );
 
