@@ -3,11 +3,12 @@
 import { Loader2, SearchIcon } from "lucide-react";
 import { Input } from "./ui/input";
 import useSearchUsers from "@/hooks/use-search-users";
-import { SingleChat } from "./SingleChat";
+import { SingleChat, SingleChatSkeleton } from "./SingleChat";
 import { useQuery } from "@tanstack/react-query";
 import { getAllUserChats } from "@/lib/api/tanstack/chat-functions";
 import { Separator } from "./ui/separator";
 import { usePathname } from "next/navigation";
+import NoChatsFoundAlert from "./alerts/NoChatsFoundAlert";
 
 export default function UserChats({ userId }: { userId: string }) {
   const userChatsQueryKey = ["allUserChats", userId];
@@ -15,12 +16,41 @@ export default function UserChats({ userId }: { userId: string }) {
     useSearchUsers({
       timeout: 800,
     });
-  const { data: userChats } = useQuery({
+  const { data: userChats, isLoading: isGettingUserChats } = useQuery({
     queryKey: userChatsQueryKey,
     queryFn: ({ signal }) => getAllUserChats({ signal }),
   });
 
-  const pathname = usePathname();
+  let content;
+
+  if ((isLoading && debouncedValue) || isGettingUserChats) {
+    content = Array.from({ length: 10 }, (_, i) => (
+      <SingleChatSkeleton key={i} />
+    ));
+  } else if (debouncedValue && searchResults) {
+    content = searchResults.map((chat) => (
+      <SingleChat key={chat._id} chat={chat} />
+    ));
+  } else if (userChats) {
+    content = userChats.map((conv) => {
+      const user = conv.user1._id === userId ? conv.user2 : conv.user1;
+
+      const chat = {
+        _id: user._id,
+        lastMessage: conv.lastMessage,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+        createdAt: conv.createdAt,
+        updatedAt: conv.updatedAt,
+      };
+
+      return <SingleChat key={chat._id} chat={chat} />;
+    });
+  } else {
+    content = <NoChatsFoundAlert />;
+  }
 
   return (
     <>
@@ -48,28 +78,7 @@ export default function UserChats({ userId }: { userId: string }) {
       </div>
 
       <div className="flex-1 flex flex-col gap-1 overflow-y-auto chat-scrollbar">
-        {debouncedValue &&
-          searchResults?.map((chat) => (
-            <SingleChat key={chat._id} chat={chat} />
-          ))}
-
-        {!debouncedValue &&
-          userChats?.map((conv) => {
-            const user = conv.user1._id === userId ? conv.user2 : conv.user1;
-
-            const chat = {
-              _id: user._id,
-              lastMessage: conv.lastMessage,
-              name: user.name,
-              username: user.username,
-              email: user.email,
-              avatar: user.avatar,
-              createdAt: conv.createdAt,
-              updatedAt: conv.updatedAt,
-            };
-
-            return <SingleChat key={chat._id} chat={chat} />;
-          })}
+        {content}
       </div>
 
       <Separator className="my-1" />
