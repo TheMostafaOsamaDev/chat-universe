@@ -53,6 +53,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       clientId: client.id,
     });
 
+    console.log(client.user._id, true, client.id);
+
     return await this.chatService.changeUserStatus(
       client.user._id,
       true,
