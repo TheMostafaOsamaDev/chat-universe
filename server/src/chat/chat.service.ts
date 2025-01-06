@@ -35,6 +35,7 @@ export class ChatService {
       .find({
         $or: [{ user1: userId }, { user2: userId }],
       })
+      .sort({ updatedAt: -1 })
       .populate('user1 user2')
       .select('-password -email -avatar -email')
       .limit(10);

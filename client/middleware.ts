@@ -11,7 +11,9 @@ export default async function middleware(request: NextRequest) {
     pathname === "/chat" ||
     pathname.startsWith("/chat/") ||
     pathname === "/profile";
-  console.log(pathname);
+
+  const headers = new Headers(request.headers);
+  headers.set("x-current-path", request.nextUrl.pathname);
 
   const { data: session } = await betterFetch<Session>(
     "/api/auth/get-session",
@@ -34,7 +36,7 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/log-in", request.url));
   }
 
-  return NextResponse.next();
+  return NextResponse.next({ headers });
 }
 
 export const config = {

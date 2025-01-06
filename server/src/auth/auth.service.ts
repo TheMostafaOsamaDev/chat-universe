@@ -27,7 +27,7 @@ export class AuthService {
 
     const user = new this.userModel({
       ...createUserDto,
-      username: createUserDto.name,
+      username: createUserDto.name.slice(0, 20),
     });
     return user.save();
   }

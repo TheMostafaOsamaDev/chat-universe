@@ -6,6 +6,8 @@ import useSearchUsers from "@/hooks/use-search-users";
 import { SingleChat } from "./SingleChat";
 import { useQuery } from "@tanstack/react-query";
 import { getAllUserChats } from "@/lib/api/tanstack/chat-functions";
+import { Separator } from "./ui/separator";
+import { usePathname } from "next/navigation";
 
 export default function UserChats({ userId }: { userId: string }) {
   const userChatsQueryKey = ["allUserChats", userId];
@@ -18,9 +20,11 @@ export default function UserChats({ userId }: { userId: string }) {
     queryFn: ({ signal }) => getAllUserChats({ signal }),
   });
 
+  const pathname = usePathname();
+
   return (
     <>
-      <div className="grid w-full max-w-sm items-center gap-1.5 mb-2">
+      <div className="grid w-full md:max-w-sm items-center gap-1.5 mb-2">
         <div className="relative">
           <div className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground">
             <SearchIcon className="h-4 w-4" />
@@ -43,7 +47,7 @@ export default function UserChats({ userId }: { userId: string }) {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col gap-1">
+      <div className="flex-1 flex flex-col gap-1 overflow-y-auto chat-scrollbar">
         {debouncedValue &&
           searchResults?.map((chat) => (
             <SingleChat key={chat._id} chat={chat} />
@@ -67,6 +71,8 @@ export default function UserChats({ userId }: { userId: string }) {
             return <SingleChat key={chat._id} chat={chat} />;
           })}
       </div>
+
+      <Separator className="my-1" />
     </>
   );
 }
