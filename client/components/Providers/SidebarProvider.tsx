@@ -7,7 +7,7 @@ export default function SidebarProvider({
   children: React.ReactNode;
 }) {
   return (
-    <div className={"grid  grid-cols-1 md:grid-cols-[300px_1fr]"}>
+    <div className={"grid  md:grid-cols-[300px_1fr]"}>
       <Sidebar />
       {children}
     </div>
