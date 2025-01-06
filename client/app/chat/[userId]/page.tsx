@@ -7,8 +7,9 @@ import { headers } from "next/headers";
 import React from "react";
 
 export default async function SingleChatPage() {
+  const headerList = await headers();
   const session = await auth.api.getSession({
-    headers: await headers(),
+    headers: headerList,
   });
   const userId = session?.user?.mongoId;
 

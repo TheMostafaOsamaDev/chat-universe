@@ -13,13 +13,6 @@ export default async function Sidebar() {
   });
   const userId = session?.user?.mongoId;
 
-  const pathname = headerList.get("x-current-path");
-
-  // check if the pathname is /chat/:id
-  const isChatPage = pathname?.startsWith("/chat/");
-
-  if (isChatPage) return null;
-
   if (userId)
     return (
       <div
