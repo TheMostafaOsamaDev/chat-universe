@@ -1,4 +1,5 @@
 "use client";
+import { useToast } from "@/hooks/use-toast";
 import { useSession } from "@/lib/auth-client";
 import { SocketClient } from "@/lib/socket-client";
 import React, { useEffect } from "react";
@@ -11,6 +12,7 @@ export default function SocketConnectionProvider({
 }) {
   const session = useSession();
   const user = session.data?.user;
+  const { toast } = useToast();
 
   useEffect(() => {
     let socket: Socket;
@@ -33,6 +35,25 @@ export default function SocketConnectionProvider({
       }
     };
   }, [user]);
+
+  useEffect(() => {
+    const socket = SocketClient.getInstance();
+
+    if (socket) {
+      socket.on("error", (error: SocketError) => {
+        toast({
+          description: error.message,
+          variant: "destructive",
+        });
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.off("error");
+      }
+    };
+  }, [toast]);
 
   return children;
 }

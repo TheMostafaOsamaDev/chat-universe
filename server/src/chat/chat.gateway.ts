@@ -28,7 +28,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   constructor(private readonly chatService: ChatService) {}
 
-  handleConnection(client: any, ...args: any[]) {
+  handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
   }
 
@@ -47,19 +47,27 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('userConnected')
   async userConnected(@ConnectedSocket() client: Socket) {
-    this.server.emit('changeUserStatus', {
-      isOnline: true,
-      userId: client.user._id,
-      clientId: client.id,
-    });
+    try {
+      this.server.emit('changeUserStatus', {
+        isOnline: true,
+        userId: client.user._id,
+        clientId: client.id,
+      });
 
-    console.log(client.user._id, true, client.id);
-
-    return await this.chatService.changeUserStatus(
-      client.user._id,
-      true,
-      client.id,
-    );
+      return await this.chatService.changeUserStatus(
+        client.user._id,
+        true,
+        client.id,
+      );
+    } catch (error) {
+      console.log(error);
+      WebSocketErrorUtil.handleError(
+        client,
+        client.user._id,
+        error,
+        "Can't connect user",
+      );
+    }
   }
 
   @SubscribeMessage('sendMessage')
