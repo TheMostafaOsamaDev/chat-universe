@@ -6,7 +6,7 @@ import { useParams, usePathname } from "next/navigation";
 import { Skeleton } from "./ui/skeleton";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Dot } from "lucide-react";
 
 export default function ChattingUserInfo() {
   const { userId } = useParams();
@@ -21,7 +21,9 @@ export default function ChattingUserInfo() {
     content = (
       <>
         <h4 className="font-medium">{data?.name}</h4>
-        <p className="text-sm text-gray-500">@{data?.username}</p>
+        <p className="text-sm flex items-center gap-2 font-medium">
+          <span className="size-2 rounded-full bg-red-500"></span> offline
+        </p>
       </>
     );
   else

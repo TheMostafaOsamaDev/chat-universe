@@ -8,7 +8,7 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
-import { UseGuards } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import { WsGatewayGuard } from 'src/guards/ws-gateway.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { Server, Socket } from 'socket.io';
@@ -29,10 +29,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(private readonly chatService: ChatService) {}
 
   handleConnection(client: Socket) {
-    console.log(`Client connected: ${client.id}`);
+    Logger.log(`====> Client connected: ${client.id}`);
   }
 
-  async handleDisconnect(client: any) {
+  async handleDisconnect(client: Socket) {
     const user = await this.chatService.changeUserStatus(
       client.id,
       false,

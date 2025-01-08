@@ -45,10 +45,10 @@ export default function LogIn() {
         }
       );
     } catch (error) {
-      toast({
-        description: formatAxiosError(error as AxiosError).message,
-        variant: "destructive",
-      });
+      // toast({
+      //   // description: JSON.stringify(error),
+      //   variant: "destructive",
+      // });
     }
   };
 
