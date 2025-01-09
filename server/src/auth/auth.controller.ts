@@ -17,7 +17,7 @@ import { Request, Response } from 'express';
 import { LocalGuard } from 'src/guards/local.guard';
 import { JwtAuthGuard } from 'src/guards/jwt.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorageConfig } from 'src/config/upload-avatar.config';
+import { avatarDiskStorageConfig } from 'src/config/upload-avatar.config';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('Auth')
@@ -63,7 +63,7 @@ export class AuthController {
 
   // TODO: Add intereceptor to handle file size
   @Post('upload-avatar')
-  @UseInterceptors(FileInterceptor('file', diskStorageConfig))
+  @UseInterceptors(FileInterceptor('file', avatarDiskStorageConfig))
   @UseGuards(JwtAuthGuard)
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,

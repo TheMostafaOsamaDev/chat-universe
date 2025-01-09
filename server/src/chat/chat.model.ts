@@ -8,6 +8,9 @@ export class Chat {
   @Prop({ required: true })
   message: string;
 
+  @Prop({ default: null })
+  media: string[];
+
   @Prop({ required: true, ref: 'User' })
   sender: string;
 
