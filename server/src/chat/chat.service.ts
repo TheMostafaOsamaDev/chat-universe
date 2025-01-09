@@ -40,6 +40,8 @@ export class ChatService {
       .select('-password -email -avatar -email')
       .limit(10);
 
+    console.log(conversations);
+
     return conversations;
   }
 

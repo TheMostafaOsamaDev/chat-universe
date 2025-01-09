@@ -7,13 +7,15 @@ import { Skeleton } from "./ui/skeleton";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { ArrowLeft, Dot } from "lucide-react";
+import { useSocketEffect } from "@/hooks/useSocketEffect";
 
 export default function ChattingUserInfo() {
-  const { userId } = useParams();
+  const { userId } = useParams<{ userId: string }>();
   const { data, isPending } = useQuery({
     queryKey: ["chatting-user-info"],
     queryFn: ({ signal }) => getUserInfo({ signal, userId: userId as string }),
   });
+  const isOnline = useSocketEffect(userId, data?.isOnline || false);
 
   let content;
 
@@ -21,8 +23,17 @@ export default function ChattingUserInfo() {
     content = (
       <>
         <h4 className="font-medium">{data?.name}</h4>
-        <p className="text-sm flex items-center gap-2 font-medium">
-          <span className="size-2 rounded-full bg-red-500"></span> offline
+        <p
+          className={`text-sm flex items-center gap-2 font-semibold ${
+            isOnline ? "text-primary" : "text-gray-500"
+          }`}
+        >
+          <span
+            className={`size-2 rounded-full ${
+              isOnline ? "bg-primary" : "bg-gray-500"
+            }`}
+          ></span>
+          {isOnline ? "Online" : "Offline"}
         </p>
       </>
     );
@@ -33,23 +44,9 @@ export default function ChattingUserInfo() {
         <Skeleton className="h-3 w-[150px]" />
       </>
     );
-  // return (
-  //   <div className="py-3 border-b space-y-1">
-  //     <h4 className="m-0">{data?.name}</h4>
-  //     <p className="text-sm text-gray-500">@{data?.username}</p>
-  //   </div>
-  // );
-
-  // return (
-  //   <div className="py-3 border-b space-y-2">
-  //     <Skeleton className="h-6 w-[150px]" />
-  //     <Skeleton className="h-3 w-[150px]" />
-  //   </div>
-  // );
 
   return (
     <div className="flex items-center p-4 border-b">
-      {/* <div className="w-10 h-10 rounded-full bg-gray-200"></div> */}
       <Button
         asChild
         className="mr-2 h-full rounded-full"

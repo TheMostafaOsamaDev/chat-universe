@@ -34,6 +34,7 @@ type ChatUser = {
   email: string;
   avatar: string;
   lastMessage: string;
+  isOnline: boolean;
   createdAt: string;
   updatedAt: string;
 };

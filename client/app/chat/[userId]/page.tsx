@@ -16,7 +16,6 @@ export default async function SingleChatPage() {
   if (userId)
     return (
       <div className="flex flex-col h-screen">
-        {/* Header - User info */}
         <ChattingUserInfo />
 
         <ChattingList userId={userId} />

@@ -17,8 +17,6 @@ export default function SocketConnectionProvider({
   useEffect(() => {
     let socket: Socket;
 
-    console.log(user);
-
     if (user?.mongoId) {
       socket = SocketClient.getInstance();
 

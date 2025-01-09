@@ -44,6 +44,7 @@ export default function UserChats({ userId }: { userId: string }) {
         avatar: user.avatar,
         createdAt: conv.createdAt,
         updatedAt: conv.updatedAt,
+        isOnline: user.isOnline,
       };
 
       return <SingleChat key={chat._id} chat={chat} />;
