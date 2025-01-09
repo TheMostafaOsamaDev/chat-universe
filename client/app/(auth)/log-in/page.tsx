@@ -45,10 +45,10 @@ export default function LogIn() {
         }
       );
     } catch (error) {
-      // toast({
-      //   // description: JSON.stringify(error),
-      //   variant: "destructive",
-      // });
+      toast({
+        description: formatAxiosError(error as AxiosError),
+        variant: "destructive",
+      });
     }
   };
 
@@ -81,7 +81,7 @@ export default function LogIn() {
 
       <div className="mt-8 text-center">
         <p>
-          Don't have an account?
+          Don&apos;t have an account?
           <Button asChild variant={"link"} className="w-fit" ref={buttonRef}>
             <Link href={"/sign-up"}>Sign up</Link>
           </Button>

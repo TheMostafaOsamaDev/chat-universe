@@ -7,7 +7,6 @@ import { SingleChat, SingleChatSkeleton } from "./SingleChat";
 import { useQuery } from "@tanstack/react-query";
 import { getAllUserChats } from "@/lib/api/tanstack/chat-functions";
 import { Separator } from "./ui/separator";
-import { usePathname } from "next/navigation";
 import NoChatsFoundAlert from "./alerts/NoChatsFoundAlert";
 
 export default function UserChats({ userId }: { userId: string }) {

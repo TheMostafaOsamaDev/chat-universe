@@ -4,7 +4,7 @@ import { getChat } from "@/lib/api/tanstack/chat-functions";
 import { SocketClient } from "@/lib/socket-client";
 import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { Socket } from "socket.io-client";
 import ChatBubble, { ChatBubbleSkeleton } from "./ChatBubble";
 
@@ -20,8 +20,13 @@ export default function ChattingList({ userId }: { userId: string }) {
   const params = useParams<{ userId: string }>();
   const queryClient = useQueryClient();
   const containerRef = useRef<HTMLDivElement>(null);
-  const getChatKey = ["chattingList", params.userId, userId];
-  const allUserChatsKey = ["allUserChats", userId];
+
+  // Memoize query keys to prevent unnecessary re-renders
+  const getChatKey = useMemo(
+    () => ["chattingList", params.userId, userId],
+    [params.userId, userId]
+  );
+  const allUserChatsKey = useMemo(() => ["allUserChats", userId], [userId]);
 
   const { data, isSuccess, isLoading } = useQuery({
     queryKey: getChatKey,
@@ -47,7 +52,7 @@ export default function ChattingList({ userId }: { userId: string }) {
   }, [isSuccess]);
 
   useEffect(() => {
-    let socket: Socket = SocketClient.getInstance();
+    const socket: Socket = SocketClient.getInstance();
 
     socket.on(
       "savedMessage",
@@ -99,8 +104,6 @@ export default function ChattingList({ userId }: { userId: string }) {
       socket.off("savedMessage");
     };
   }, [queryClient, getChatKey, allUserChatsKey]);
-
-  // Rest of the component remains the same...
 
   return (
     <div

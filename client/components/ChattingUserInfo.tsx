@@ -2,11 +2,11 @@
 
 import { getUserInfo } from "@/lib/api/tanstack/chat-functions";
 import { useQuery } from "@tanstack/react-query";
-import { useParams, usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Skeleton } from "./ui/skeleton";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { ArrowLeft, Dot } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useSocketEffect } from "@/hooks/useSocketEffect";
 
 export default function ChattingUserInfo() {

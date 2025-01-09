@@ -1,11 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Skeleton } from "./ui/skeleton";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getAvatar, sliceText } from "@/helpers";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { SocketClient } from "@/lib/socket-client";
 import { useSocketEffect } from "@/hooks/useSocketEffect";
 
 export function SingleChat({ chat }: { chat: ChatUser }) {
