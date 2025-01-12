@@ -8,8 +8,6 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useSocketEffect } from "@/hooks/useSocketEffect";
-import { useEffect } from "react";
-import { SocketClient } from "@/lib/socket-client";
 
 export default function ChattingUserInfo() {
   const { userId } = useParams<{ userId: string }>();
@@ -18,25 +16,6 @@ export default function ChattingUserInfo() {
     queryFn: ({ signal }) => getUserInfo({ signal, userId: userId as string }),
   });
   const isOnline = useSocketEffect(userId, data?.isOnline || false);
-
-  useEffect(() => {
-    const socket = SocketClient.getInstance();
-
-    socket.on("sendFiles", (data) => {
-      console.log(`Sending files to`);
-      console.log(data);
-    });
-
-    socket.on("filesHaveSent", (data) => {
-      console.log(`Files have been sent to`);
-      console.log(data);
-    });
-
-    return () => {
-      socket.off("sendFiles");
-      socket.off("filesHaveSent");
-    };
-  }, []);
 
   let content;
 

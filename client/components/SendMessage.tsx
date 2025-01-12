@@ -42,15 +42,9 @@ export default function SendMessage({ userId }: { userId: string }) {
     }
 
     // Handle file uploads
-    const socket = SocketClient.getInstance();
     const files = [];
     if (uploadedFiles.length > 0) {
       try {
-        socket.emit("sendFiles", {
-          userChattingWith,
-          userId,
-        });
-
         const formData = new FormData();
         uploadedFiles.forEach((file) => {
           formData.append("files", file);
@@ -71,11 +65,6 @@ export default function SendMessage({ userId }: { userId: string }) {
         return toast({
           description: axiosError.message,
           variant: "destructive",
-        });
-      } finally {
-        socket.emit("filesHaveSent", {
-          userChattingWith,
-          userId,
         });
       }
     }

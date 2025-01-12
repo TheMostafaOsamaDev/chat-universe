@@ -72,6 +72,7 @@ type ChatMessage = {
   receiver: string; // ID of the receiver user
   sender: string; // ID of the sender user
   updatedAt: string; // Timestamp when the message was last updated
+  media: string[]; // Array of media files attached to the message
   __v: number; // Version key (used in MongoDB for document versioning)
   _id: string; // Unique identifier of the chat message
 };
