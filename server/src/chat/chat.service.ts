@@ -40,8 +40,6 @@ export class ChatService {
       .select('-password -email -avatar -email')
       .limit(10);
 
-    console.log(conversations);
-
     return conversations;
   }
 
@@ -90,7 +88,12 @@ export class ChatService {
     return chat;
   }
 
-  async createMessage({ message, userId, userChattingWithId }: CreateChatDto) {
+  async createMessage({
+    message,
+    userId,
+    userChattingWithId,
+    media,
+  }: CreateChatDto) {
     const usersCount = await this.userModel.countDocuments({
       _id: { $in: [userId, userChattingWithId] },
     });
@@ -122,6 +125,7 @@ export class ChatService {
       sender: userId,
       receiver: userChattingWithId,
       conversation: conversation._id,
+      media,
     });
 
     await chat.save();

@@ -3,20 +3,25 @@
 import { Send, Upload, X, File } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { SocketClient } from "@/lib/socket-client";
 import { axiosBase } from "@/lib/api/axiosBase";
+import { formatAxiosError } from "@/helpers/format-axios-error";
+import { AxiosError } from "axios";
 
 interface UploadedFile extends File {
   preview?: string;
 }
 
-export default function SendMessage() {
+const MAX_FILES = 20; // Maximum files allowed
+
+export default function SendMessage({ userId }: { userId: string }) {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const params = useParams();
   const { toast } = useToast();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -37,32 +42,56 @@ export default function SendMessage() {
     }
 
     // Handle file uploads
+    const socket = SocketClient.getInstance();
+    const files = [];
     if (uploadedFiles.length > 0) {
-      const formData = new FormData();
-      uploadedFiles.forEach((file) => {
-        formData.append("files", file);
-      });
+      try {
+        socket.emit("sendFiles", {
+          userChattingWith,
+          userId,
+        });
 
-      // Send files to server
-      await axiosBase.post("/chat/send-message", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+        const formData = new FormData();
+        uploadedFiles.forEach((file) => {
+          formData.append("files", file);
+        });
+
+        // Send files to server
+        const res = await axiosBase.post("/chat/send-message", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        const data: string[] = res.data;
+
+        files.push(...data);
+      } catch (error) {
+        console.log(error);
+        const axiosError = formatAxiosError(error as AxiosError);
+        return toast({
+          description: axiosError.message,
+          variant: "destructive",
+        });
+      } finally {
+        socket.emit("filesHaveSent", {
+          userChattingWith,
+          userId,
+        });
+      }
     }
-
-    // Reset form and uploaded files
-    setUploadedFiles([]);
-    e.currentTarget.reset();
 
     const instance = SocketClient.getInstance();
 
     instance.emit("sendMessage", {
       message,
       userChattingWith,
+      media: files,
     });
 
-    e.currentTarget.reset();
+    // Reset input and uploaded files
+    setUploadedFiles([]);
+    inputRef.current!.focus();
+    inputRef.current!.value = "";
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,6 +99,16 @@ export default function SendMessage() {
     if (!files) return;
 
     const newFiles = Array.from(files);
+    const totalFiles = uploadedFiles.length + newFiles.length;
+
+    if (totalFiles > MAX_FILES) {
+      toast({
+        description: `You can only upload up to ${MAX_FILES} files.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     const hasLargeFiles = newFiles.some((file) => file.size > 10 * 1024 * 1024);
 
     if (hasLargeFiles) {
@@ -152,6 +191,7 @@ export default function SendMessage() {
           placeholder="Send message"
           className="focus-visible:ring-offset-0 focus-visible:ring-0 border-2 focus-visible:border-primary h-full"
           name="message"
+          ref={inputRef}
         />
         <Button variant="secondary" className="relative cursor-pointer" asChild>
           <div>
@@ -162,6 +202,7 @@ export default function SendMessage() {
               onChange={handleFileUpload}
               className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
               accept="image/*,.pdf,.doc,.docx,.txt"
+              // max files is 10
             />
           </div>
         </Button>

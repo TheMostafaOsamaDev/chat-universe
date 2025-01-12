@@ -16,7 +16,7 @@ import { ApiResponse } from '@nestjs/swagger';
 import { GetChatDto } from './dto/get-chat.dto';
 import { JwtAuthGuard } from 'src/guards/jwt.guard';
 import { Request } from 'express';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { chatDiskStorageConfig } from 'src/config/upload-avatar.config';
 
 @Controller('chat')
@@ -49,8 +49,10 @@ export class ChatController {
   }
 
   @Post('send-message')
-  @UseInterceptors(FileInterceptor('files', chatDiskStorageConfig))
-  async sendMessage(@UploadedFiles() files: Express.Multer.File) {
-    console.log(files);
+  @UseInterceptors(FilesInterceptor('files', 20, chatDiskStorageConfig))
+  async sendMessage(@UploadedFiles() files: Array<Express.Multer.File>) {
+    const allFiles = files.map((file) => file.filename);
+
+    return allFiles;
   }
 }
