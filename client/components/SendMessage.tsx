@@ -10,6 +10,7 @@ import { SocketClient } from "@/lib/socket-client";
 import { axiosBase } from "@/lib/api/axiosBase";
 import { formatAxiosError } from "@/helpers/format-axios-error";
 import { AxiosError } from "axios";
+import Image from "next/image";
 
 interface UploadedFile extends File {
   preview?: string;
@@ -17,7 +18,7 @@ interface UploadedFile extends File {
 
 const MAX_FILES = 20; // Maximum files allowed
 
-export default function SendMessage({ userId }: { userId: string }) {
+export default function SendMessage() {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const params = useParams();
   const { toast } = useToast();
@@ -144,10 +145,12 @@ export default function SendMessage({ userId }: { userId: string }) {
               >
                 {file.type.startsWith("image/") ? (
                   <div className="relative w-8 h-8">
-                    <img
-                      src={file.preview}
+                    <Image
+                      src={file.preview || ""}
                       alt={file.name}
-                      className="w-full h-full object-cover rounded"
+                      className="w-6 h-6 object-cover rounded"
+                      width={80}
+                      height={80}
                     />
                   </div>
                 ) : (

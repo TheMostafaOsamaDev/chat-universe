@@ -20,7 +20,7 @@ export default async function SingleChatPage() {
 
         <ChattingList userId={userId} />
 
-        <SendMessage userId={userId} />
+        <SendMessage />
       </div>
     );
 
